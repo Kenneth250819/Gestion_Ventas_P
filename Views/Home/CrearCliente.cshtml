@@ -1,0 +1,133 @@
+﻿@model List<Gestion_Ventas_P.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Crear Cliente";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<h2>Crear Nuevo Cliente</h2>
+
+<form asp-action="CrearCliente" method="post">
+    <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" class="form-control" id="nombre" name="nombre" required />
+    </div>
+
+    <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input type="text" class="form-control" id="apellido" name="apellido" required />
+    </div>
+
+    <div class="form-group">
+        <label for="apellido2">Segundo Apellido</label>
+        <input type="text" class="form-control" id="apellido2" name="apellido2" />
+    </div>
+
+    <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input type="text" class="form-control" id="direccion" name="direccion" />
+    </div>
+
+    <div class="form-group">
+        <label for="provincia">Provincia</label>
+        <input type="text" class="form-control" id="provincia" name="provincia" />
+    </div>
+
+    <div class="form-group">
+        <label for="canton">Cantón</label>
+        <input type="text" class="form-control" id="canton" name="canton" />
+    </div>
+
+    <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input type="text" class="form-control" id="telefono" name="telefono" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input type="email" class="form-control" id="email" name="email" />
+    </div>
+
+    <div class="form-group">
+        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+        <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" />
+    </div>
+
+    <div class="form-group">
+        <label for="nacionalidad">Nacionalidad</label>
+        <input type="text" class="form-control" id="nacionalidad" name="nacionalidad" />
+    </div>
+
+    <div class="form-group">
+        <label for="adicionadoPor">Adicionado Por</label>
+        <input type="text" class="form-control" id="adicionadoPor" name="adicionadoPor" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+</form>
+
+<h2>Lista de Clientes</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Cliente</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Apellido2</th>
+            <th>Direccion</th>
+            <th>Provincia</th>
+            <th>Canton</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            <th>FechaNacimiento</th>
+            <th>Nacionalidad</th>
+            <th>AdicionadoPor</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || Model.Count == 0)
+        {
+            <tr>
+                <td colspan="13" class="text-center">No hay clientes registrados.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var cliente in Model)
+            {
+                <tr>
+                    <td>@cliente.ClienteID</td>
+                    <td>@cliente.Nombre</td>
+                    <td>@cliente.Apellido</td>
+                    <td>@cliente.Apellido2</td>
+                    <td>@cliente.Direccion</td>
+                    <td>@cliente.Provincia</td>
+                    <td>@cliente.Canton</td>
+                    <td>@cliente.Telefono</td>
+                    <td>@cliente.Email</td>
+                    <td>@cliente.FechaNacimiento?.ToString("yyyy-MM-dd")</td>
+                    <td>@cliente.Nacionalidad</td>
+                    <td>@cliente.AdicionadoPor</td>
+                    <td>
+                        <a href="@Url.Action("ActualizarCliente", "Home", new { id = cliente.ClienteID })" class="btn btn-warning btn-sm">Actualizar</a>
+                        <form asp-action="EliminarCliente" method="post" style="display:inline;">
+                            <input type="hidden" name="ClienteID" value="@cliente.ClienteID" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
