@@ -127,7 +127,7 @@ namespace Gestion_Ventas_P.Controllers
 
             return RedirectToAction("CrearCliente");
         }
-
+         
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
