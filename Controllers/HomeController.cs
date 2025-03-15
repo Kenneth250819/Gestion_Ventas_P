@@ -52,6 +52,26 @@ namespace Gestion_Ventas_P.Controllers
             return View();
         }
 
+        public IActionResult TipoDePan()
+        {
+            List<TipoDePan> listaTipoDePan = _accesoDatos.MostrarTipoDePans();
+            return View(listaTipoDePan);
+        }
+
+        public IActionResult ActualizarTipoDePan(int id)
+        {
+            TipoDePan TipoPan = _accesoDatos.ObtenerTipoDePanPorID(id);
+
+            if (TipoPan == null)
+            {
+                return NotFound();
+            }
+
+            return View(TipoPan);
+        }
+
+
+
         public IActionResult CrearCliente()
         {
             List<Cliente> clientes = _accesoDatos.ObtenerTodosLosClientes();
@@ -118,7 +138,7 @@ namespace Gestion_Ventas_P.Controllers
             try
             {
                 _accesoDatos.EliminarCliente(ClienteID);
-                TempData["Mensaje"] = "Paciente eliminado correctamente.";
+                TempData["Mensaje"] = "Cliente eliminado correctamente.";
             }
             catch (Exception ex)
             {
@@ -127,7 +147,59 @@ namespace Gestion_Ventas_P.Controllers
 
             return RedirectToAction("CrearCliente");
         }
-         
+
+        [HttpPost]
+        public IActionResult AgregarTipoDePan(TipoDePan tipoNuevo)
+        {
+
+            try
+                {
+                    _accesoDatos.AgregarTipoDePan(tipoNuevo);
+                    TempData["SuccessMessage"] = "Pan Agregado correctamente.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Error al agregar el pan: " + ex.Message;
+                }
+            List<TipoDePan> listaTipoDePan = _accesoDatos.MostrarTipoDePans();
+            return View("TipoDePan", listaTipoDePan);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarTipoDePan(TipoDePan panActualizado)
+        {   
+                try
+                {
+                    _accesoDatos.ActualizarTipoDePan(panActualizado);
+                    TempData["SuccessMessage"] = "Tipo de pan actualizado correctamente.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+                }
+           
+            return RedirectToAction("TipoDePan");
+        }
+
+
+        [HttpPost]
+        public IActionResult EliminarTipoDePan(int TipoDePanID)
+        {
+            try
+            {
+                _accesoDatos.EliminarTipoDePan(TipoDePanID);
+                TempData["Mensaje"] = "Pan eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("TipoDePan");
+        }
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

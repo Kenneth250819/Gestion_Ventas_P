@@ -1,0 +1,27 @@
+﻿@model Gestion_Ventas_P.Models.TipoDePan
+
+@{
+    ViewData["Title"] = "Editar Tipo de Pan";
+}
+
+<h2>Editar Tipo de Pan</h2>
+
+<form asp-action="ActualizarTipoDePan" method="post">
+    <input type="hidden" asp-for="TipoPanID" />
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" required />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea asp-for="Descripcion" class="form-control" required></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+    <a asp-action="TipoDePan" class="btn btn-secondary">Cancelar</a>
+</form>
+

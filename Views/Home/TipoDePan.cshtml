@@ -1,0 +1,83 @@
+﻿@model List<Gestion_Ventas_P.Models.TipoDePan>
+
+@{
+    ViewData["Title"] = "Gestión de Tipos de Pan";
+}
+
+<h2>Agregar Tipo de Pan</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<!-- Formulario para agregar un tipo de pan -->
+<form asp-action="AgregarTipoDePan" method="post">
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input name="Nombre" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea name="Descripcion" class="form-control" required></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Adicionado por</label>
+        <input name="AdicionadoPor" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Agregar</button>
+</form>
+
+<hr>
+
+<h2>Lista de Tipos de Pan</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Fecha de Adición</th>
+            <th>Adicionado Por</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || Model.Count == 0)
+        {
+            <tr>
+                <td colspan="6" class="text-center">No hay tipos de pan registrados.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var pan in Model)
+            {
+                <tr>
+                    <td>@pan.TipoPanID</td>
+                    <td>@pan.Nombre</td>
+                    <td>@pan.Descripcion</td>
+                    <td>@pan.FechaAdicion.ToString("yyyy-MM-dd")</td>
+                    <td>@pan.AdicionadoPor</td>
+                    <td>
+                        <a href="@Url.Action("ActualizarTipoDePan", "Home", new { id = pan.TipoPanID })" class="btn btn-warning btn-sm">Editar</a>
+
+                        <form asp-action="EliminarTipoDePan" method="post" style="display:inline;">
+                            <input type="hidden" name="TipoDePanID" value="@pan.TipoPanID" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este tipo de pan?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

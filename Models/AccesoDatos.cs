@@ -200,8 +200,135 @@ namespace Gestion_Ventas_P.Models
             }
         }
 
+        public void AgregarTipoDePan(TipoDePan TipoNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_TipoPan  @Nombre, @Descripcion,  @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {   
+                        cmd.Parameters.AddWithValue("@Nombre", TipoNuevo.Nombre);
+                        cmd.Parameters.AddWithValue("@Descripcion", TipoNuevo.Descripcion);
+                        cmd.Parameters.AddWithValue("@adicionado_por", TipoNuevo.AdicionadoPor);
+                      
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar el Tipo de pan: " + ex.Message);
+                }
+            }
+        }
+
+        public List<TipoDePan> MostrarTipoDePans()
+        {
+            List<TipoDePan> listaTipoDePan = new List<TipoDePan>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_TiposPan";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TipoDePan pan = new TipoDePan
+                                {
+                                    TipoPanID = Convert.ToInt32(reader["TipoPanID"]),                                 
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Descripcion = reader["Descripcion"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                   
+                                };
+                                listaTipoDePan.Add(pan);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de Panes: " + ex.Message);
+                }
+            }
+
+            return listaTipoDePan;
+        }
 
 
+        public TipoDePan ObtenerTipoDePanPorID(int TipoPanID)
+        {
+            TipoDePan TipoPan = null;
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Mostrar_TipoPan_Por_Id", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@TipoPanID", TipoPanID);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    TipoPan = new TipoDePan
+                    {
+                        TipoPanID = Convert.ToInt32(reader["TipoPanID"]),
+                        Nombre = reader["Nombre"].ToString(),
+                        Descripcion = reader["Descripcion"].ToString(),
+                        ModificadoPor = reader["modificado_por"].ToString()
+                    };
+                }
+            }
+            return TipoPan;
+        }
+
+
+
+        public void ActualizarTipoDePan(TipoDePan PanActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_TipoPan", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@TipoPanID", PanActualizado.TipoPanID);
+                cmd.Parameters.AddWithValue("@Nombre", PanActualizado.Nombre);
+                cmd.Parameters.AddWithValue("@Descripcion", PanActualizado.Descripcion);           
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void EliminarTipoDePan(int TipoPanID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_TipoPan @TipoPanID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@TipoPanID", TipoPanID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Cliente: " + ex.Message);
+                }
+            }
+        }
 
 
     }
