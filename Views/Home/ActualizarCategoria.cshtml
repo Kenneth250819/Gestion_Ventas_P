@@ -1,0 +1,26 @@
+﻿@model Gestion_Ventas_P.Models.Categoria
+
+@{
+    ViewData["Title"] = "Editar Categoria";
+}
+
+<h2>Editar Categoria</h2>
+
+<form asp-action="ActualizarCategoria" method="post">
+    <input type="hidden" asp-for="CategoriaID" />
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" required />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción</label>
+        <textarea asp-for="Descripcion" class="form-control" required></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar Cambios</button>
+    <a asp-action="Categoria" class="btn btn-secondary">Cancelar</a>
+</form>

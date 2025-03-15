@@ -1,0 +1,83 @@
+﻿@model List<Gestion_Ventas_P.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Agregar Categoría";
+}
+
+<h2>Agregar Nueva Categoría</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="AgregarCategoria" method="post">
+    <div class="form-group">
+        <label for="Nombre">Nombre</label>
+        <input type="text" class="form-control" id="Nombre" name="Nombre" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Descripcion">Descripción</label>
+        <textarea class="form-control" id="Descripcion" name="Descripcion" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="AdicionadoPor">Añadido por</label>
+        <input type="text" class="form-control" id="AdicionadoPor" name="AdicionadoPor" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Agregar</button>
+</form>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Volver</a>
+
+<hr>
+
+<h2>Lista de Categorias</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Fecha de Adición</th>
+            <th>Adicionado Por</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || Model.Count == 0)
+        {
+            <tr>
+                <td colspan="6" class="text-center">No hay Categorias registradas.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var cat in Model)
+            {
+                <tr>
+                    <td>@cat.CategoriaID</td>
+                    <td>@cat.Nombre</td>
+                    <td>@cat.Descripcion</td>
+                    <td>@cat.FechaAdicion.ToString("yyyy-MM-dd")</td>
+                    <td>@cat.AdicionadoPor</td>
+                    <td>
+                        <a href="@Url.Action("ActualizarCategoria", "Home", new { id = cat.CategoriaID })" class="btn btn-warning btn-sm">Editar</a>
+
+                        <form asp-action="EliminarCategoria" method="post" style="display:inline;">
+                            <input type="hidden" name="CategoriaID" value="@cat.CategoriaID" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este Categoria?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

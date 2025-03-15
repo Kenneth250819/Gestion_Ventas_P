@@ -325,7 +325,135 @@ namespace Gestion_Ventas_P.Models
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Error al eliminar Cliente: " + ex.Message);
+                    throw new Exception("Error al eliminar Tipo de pan: " + ex.Message);
+                }
+            }
+        }
+
+        public void AgregarCategoria(Categoria CategoriaNueva)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_Categoria  @Nombre, @Descripcion,  @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Nombre", CategoriaNueva.Nombre);
+                        cmd.Parameters.AddWithValue("@Descripcion", CategoriaNueva.Descripcion);
+                        cmd.Parameters.AddWithValue("@adicionado_por", CategoriaNueva.AdicionadoPor);
+
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar la categoria: " + ex.Message);
+                }
+            }
+        }
+
+        public List<Categoria> MostrarCategoria()
+        {
+            List<Categoria> listaCategoria = new List<Categoria>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_Categoria";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Categoria cat = new Categoria
+                                {
+                                    CategoriaID = Convert.ToInt32(reader["CategoriaID"]),
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Descripcion = reader["Descripcion"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+
+                                };
+                                listaCategoria.Add(cat);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de Categorias: " + ex.Message);
+                }
+            }
+
+            return listaCategoria;
+        }
+
+        public Categoria ObtenerCategoriaPorID(int CategoriaID)
+        {
+            Categoria categoria = null;
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Mostrar_Categoria_Por_Id", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CategoriaID", CategoriaID);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    categoria = new Categoria
+                    {
+                        CategoriaID = Convert.ToInt32(reader["CategoriaID"]),
+                        Nombre = reader["Nombre"].ToString(),
+                        Descripcion = reader["Descripcion"].ToString(),
+                        ModificadoPor = reader["modificado_por"].ToString()
+                    };
+                }
+            }
+            return categoria;
+        }
+
+
+        public void ActualizarCategoria(Categoria CategoriaActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_Categoria", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@CategoriaID", CategoriaActualizado.CategoriaID);
+                cmd.Parameters.AddWithValue("@Nombre", CategoriaActualizado.Nombre);
+                cmd.Parameters.AddWithValue("@Descripcion", CategoriaActualizado.Descripcion);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void EliminarCategoria(int CategoriaID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_Categoria @CategoriaID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@CategoriaID", CategoriaID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Categoria: " + ex.Message);
                 }
             }
         }

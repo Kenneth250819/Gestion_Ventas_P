@@ -58,6 +58,13 @@ namespace Gestion_Ventas_P.Controllers
             return View(listaTipoDePan);
         }
 
+        public IActionResult Categoria()
+        {
+            List<Categoria> listaCategoria = _accesoDatos.MostrarCategoria();
+            return View(listaCategoria);
+        }
+
+
         public IActionResult ActualizarTipoDePan(int id)
         {
             TipoDePan TipoPan = _accesoDatos.ObtenerTipoDePanPorID(id);
@@ -198,8 +205,64 @@ namespace Gestion_Ventas_P.Controllers
             return RedirectToAction("TipoDePan");
         }
 
+        [HttpPost]
+        public IActionResult AgregarCategoria(Categoria CategoriaNueva)
+        {
 
+            try
+            {
+                _accesoDatos.AgregarCategoria(CategoriaNueva);
+                TempData["SuccessMessage"] = "Categoria Agregada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al agregar la Categoria: " + ex.Message;
+            }
+            List<Categoria> listaCategoria = _accesoDatos.MostrarCategoria();
+            return View("Categoria", listaCategoria);
+        }
 
+        public IActionResult ActualizarCategoria(int id)
+        {
+            Categoria categoria = _accesoDatos.ObtenerCategoriaPorID(id);
+            if (categoria == null)
+            {
+                return NotFound();
+            }
+            return View(categoria);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarCategoria(Categoria CategoriaActualizado)
+        {
+            try
+            {
+                _accesoDatos.ActualizarCategoria(CategoriaActualizado);
+                TempData["SuccessMessage"] = "Categoria actualizada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("Categoria");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarCategoria(int CategoriaID)
+        {
+            try
+            {
+                _accesoDatos.EliminarCategoria(CategoriaID);
+                TempData["Mensaje"] = "Categoria eliminada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("Categoria");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
