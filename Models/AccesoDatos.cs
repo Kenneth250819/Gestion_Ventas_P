@@ -628,11 +628,6 @@ namespace Gestion_Ventas_P.Models
         }
 
 
-
-
-
-
-
         public void EliminarProducto(int ProductoID)
         {
             using (SqlConnection con = new SqlConnection(_conexion))
@@ -653,6 +648,172 @@ namespace Gestion_Ventas_P.Models
                 }
             }
         }
+
+
+
+        public void AgregarVenta(Venta VentaNueva)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_Venta  @ClienteID, @FechaVenta, @Total, @Estado, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ClienteID", VentaNueva.ClienteID);
+                        cmd.Parameters.AddWithValue("@FechaVenta", VentaNueva.FechaVenta);
+                        cmd.Parameters.AddWithValue("@Total", VentaNueva.Total);
+                        cmd.Parameters.AddWithValue("@Estado", VentaNueva.Estado);
+                        cmd.Parameters.AddWithValue("@adicionado_por", VentaNueva.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar la Venta: " + ex.Message);
+                }
+            }
+        }
+
+        public List<Cliente> ObtenerClientes()
+        {
+            List<Cliente> lista = new List<Cliente>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_lista_Clientes", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    lista.Add(new Cliente
+                    {
+                        ClienteID = Convert.ToInt32(reader["ClienteID"]),
+                        Nombre = reader["Nombre"].ToString()
+                    });
+                }
+            }
+            return lista;
+        }
+
+        public List<Venta> MostrarVenta()
+        {
+            List<Venta> listaVenta = new List<Venta>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_Venta";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Venta ven = new Venta
+                                {
+                                    VentaID = Convert.ToInt32(reader["VentaID"]),
+                                    ClienteNombre = reader["Cliente"].ToString(),
+                                    FechaVenta = Convert.ToDateTime(reader["FechaVenta"]),
+                                    Total = Convert.ToInt32(reader["Total"]),
+                                    Estado = reader["Estado"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+
+
+                                };
+                                listaVenta.Add(ven);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de Ventas: " + ex.Message);
+                }
+            }
+
+            return listaVenta;
+        }
+
+        public Venta ObtenerVentaPorID(int VentaID)
+        {
+            Venta venta = null;
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Mostrar_Venta_Por_Id", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@VentaID", VentaID);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    venta = new Venta
+                    {
+                        VentaID = Convert.ToInt32(reader["VentaID"]),                    
+                        ClienteNombre = reader["Cliente"].ToString(), // Si el SP devuelve el nombre del cliente
+                        FechaVenta = Convert.ToDateTime(reader["FechaVenta"]),
+                        Total = Convert.ToDecimal(reader["Total"]),
+                        Estado = reader["Estado"].ToString(),
+                        FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                        AdicionadoPor = reader["adicionado_por"].ToString(),
+                        FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                        ModificadoPor = reader["modificado_por"]?.ToString()
+                    };
+                }
+            }
+            return venta;
+        }
+
+
+        public void ActualizarVenta(Venta VentaActualizada)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_Venta", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@VentaID", VentaActualizada.VentaID);
+                cmd.Parameters.AddWithValue("@ClienteID", VentaActualizada.ClienteID);
+                cmd.Parameters.AddWithValue("@FechaVenta", VentaActualizada.FechaVenta);
+                cmd.Parameters.AddWithValue("@Total", VentaActualizada.Total);
+                cmd.Parameters.AddWithValue("@Estado", VentaActualizada.Estado);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin"); // Debes asignar el usuario real que modifica la venta
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
+        public void EliminarVenta(int VentaID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_Venta @VentaID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@VentaID", VentaID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Producto: " + ex.Message);
+                }
+            }
+        }
+
 
 
 

@@ -83,12 +83,36 @@ namespace Gestion_Ventas_P.Controllers
             return View();
         }
         
+        public IActionResult Venta()
+        {
+            try
+            {
+                // Obtener la lista de clientes para el dropdown
+                ViewBag.Clientes = new SelectList(_accesoDatos.ObtenerClientes(), "ClienteID", "Nombre");
+                
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al cargar los datos: " + ex.Message;
+                
+            }
+            return View();
+        }
+
+
+
+
         public IActionResult VerProductos()
         {
             List<Producto> listaProducto = _accesoDatos.MostrarProducto();
             return View(listaProducto);
         }
 
+        public IActionResult VerVentas()
+        {
+            List<Venta> listaVenta = _accesoDatos.MostrarVenta();
+            return View(listaVenta);
+        }
 
 
         public IActionResult ActualizarTipoDePan(int id)
@@ -309,8 +333,8 @@ namespace Gestion_Ventas_P.Controllers
                 ViewBag.Categorias = new SelectList(_accesoDatos.ObtenerCategorias(), "CategoriaID", "Nombre");
                 ViewBag.TiposDePan = new SelectList(_accesoDatos.ObtenerTiposDePan(), "TipoPanID", "Nombre");
             }
-            List<Producto> listaProducto = _accesoDatos.MostrarProducto();
-            return View("Producto", listaProducto);
+            
+            return View("Producto");
 
         }
 
@@ -362,8 +386,76 @@ namespace Gestion_Ventas_P.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult AgregarVenta(Venta VentaNueva)
+        {
+            try
+            {
+
+                // Si hay errores de validación, recargar la vista con los datos ingresados
+                ViewBag.Clientes = new SelectList(_accesoDatos.ObtenerClientes(), "ClienteID", "Nombre");
+
+                // Llamar al método para agregar la venta
+                _accesoDatos.AgregarVenta(VentaNueva);
+
+                TempData["SuccessMessage"] = "Venta registrada correctamente.";
+                return RedirectToAction("Venta"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al registrar la venta: " + ex.Message;
+
+                // Recargar la vista con los datos ingresados en caso de error
+                ViewBag.Clientes = new SelectList(_accesoDatos.ObtenerClientes(), "ClienteID", "Nombre");
+                return View("Venta");
+            }
+        }
+
+        public IActionResult ActualizarVenta(int id)
+        {
+            Venta Venta = _accesoDatos.ObtenerVentaPorID(id);
+            if (Venta == null)
+            {
+                return NotFound();
+            }
+            // Obtener las listas de categorías y tipos de pan para los dropdowns
+            ViewBag.Clientes = new SelectList(_accesoDatos.ObtenerClientes(), "ClienteID", "Nombre");
+            return View(Venta);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarVenta(Venta VentaActualizada)
+        {
+            try
+            {
+                _accesoDatos.ActualizarVenta(VentaActualizada);
+                TempData["SuccessMessage"] = "Venta actualizada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerVentas");
+        }
 
 
+
+        [HttpPost]
+        public IActionResult EliminarVenta(int VentaID)
+        {
+            try
+            {
+                _accesoDatos.EliminarVenta(VentaID);
+                TempData["Mensaje"] = "Venta eliminada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerVentas");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

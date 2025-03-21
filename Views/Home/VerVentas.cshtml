@@ -1,0 +1,65 @@
+﻿@model List<Gestion_Ventas_P.Models.Venta>
+
+@{
+    ViewData["Title"] = "Lista de Ventas";
+}
+
+<h2>Lista de Ventas</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<hr />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Venta</th>
+            <th>Cliente</th>
+            <th>Fecha de Venta</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Fecha de Adición</th>
+            <th>Adicionado Por</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || Model.Count == 0)
+        {
+            <tr>
+                <td colspan="8" class="text-center">No hay ventas registradas.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var venta in Model)
+            {
+                <tr>
+                    <td>@venta.VentaID</td>
+                    <td>@venta.ClienteNombre</td>
+                    <td>@venta.FechaVenta.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@venta.Total</td>
+                    <td>@venta.Estado</td>
+                    <td>@venta.FechaAdicion</td>
+                    <td>@venta.AdicionadoPor</td>
+                    <td>
+                        <a href="@Url.Action("ActualizarVenta", "Home", new { id = venta.VentaID })" class="btn btn-warning btn-sm">Actualizar</a>
+                        <form asp-action="EliminarVenta" method="post" style="display:inline;">
+                            <input type="hidden" name="VentaID" value="@venta.VentaID" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta venta?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a asp-action="Venta" class="btn btn-secondary mt-3">Volver Atrás</a>

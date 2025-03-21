@@ -1,0 +1,50 @@
+﻿@model Gestion_Ventas_P.Models.Venta
+
+@{
+    ViewData["Title"] = "Actualizar Venta";
+}
+
+<h2>Actualizar Venta</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="ActualizarVenta" method="post">
+    <input type="hidden" asp-for="VentaID" />
+
+    <div class="form-group">
+        <label asp-for="ClienteID">Cliente</label>
+        <select asp-for="ClienteID" asp-items="ViewBag.Clientes" class="form-control">
+            <option value="">Seleccione un cliente</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FechaVenta">Fecha de Venta</label>
+        <input asp-for="FechaVenta" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Total">Total</label>
+        <input asp-for="Total" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Estado">Estado</label>
+        <select asp-for="Estado" class="form-control">
+            <option value="Pendiente">Pendiente</option>
+            <option value="Completado">Completado</option>
+            <option value="Cancelado">Cancelado</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a asp-action="Venta" class="btn btn-secondary">Cancelar</a>
+</form>
