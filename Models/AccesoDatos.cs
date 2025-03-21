@@ -458,6 +458,211 @@ namespace Gestion_Ventas_P.Models
             }
         }
 
+        public void AgregarProductos(Producto ProductoNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_Producto  @Nombre, @Descripcion,  @PrecioUnitario, @CategoriaID, @TipoPanID, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Nombre", ProductoNuevo.Nombre);
+                        cmd.Parameters.AddWithValue("@Descripcion", ProductoNuevo.Descripcion);
+                        cmd.Parameters.AddWithValue("@PrecioUnitario", ProductoNuevo.PrecioUnitario);
+                        cmd.Parameters.AddWithValue("@CategoriaID", ProductoNuevo.CategoriaID);
+                        cmd.Parameters.AddWithValue("@TipoPanID", ProductoNuevo.TipoPanID);
+                        cmd.Parameters.AddWithValue("@adicionado_por", ProductoNuevo.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar el Producto: " + ex.Message);
+                }
+            }
+        }
+
+
+        public List<Categoria> ObtenerCategorias()
+        {
+            List<Categoria> lista = new List<Categoria>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_lista_Categorias", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    lista.Add(new Categoria
+                    {
+                        CategoriaID = Convert.ToInt32(reader["CategoriaID"]),
+                        Nombre = reader["Nombre"].ToString()
+                    });
+                }
+            }
+            return lista;
+        }
+
+        public List<TipoDePan> ObtenerTiposDePan()
+        {
+            List<TipoDePan> lista = new List<TipoDePan>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_lista_TiposDePan", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    lista.Add(new TipoDePan
+                    {
+                        TipoPanID = Convert.ToInt32(reader["TipoPanID"]),
+                        Nombre = reader["Nombre"].ToString()
+                    });
+                }
+            }
+            return lista;
+        }
+
+
+        public List<Producto> MostrarProducto()
+        {
+            List<Producto> listaProducto = new List<Producto>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_Productos";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Producto pro = new Producto
+                                {
+                                    ProductoID = Convert.ToInt32(reader["ProductoID"]),
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Descripcion = reader["Descripcion"].ToString(),
+                                    PrecioUnitario = Convert.ToDecimal(reader["PrecioUnitario"]),
+                                    CategoriaNombre = reader["Categoria"].ToString(),
+                                    TipoPanNombre = reader["TipoDePan"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+
+
+                                };
+                                listaProducto.Add(pro);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de Categorias: " + ex.Message);
+                }
+            }
+
+            return listaProducto;
+        }
+
+
+
+        public Producto ObtenerMostrarProductoPorID(int ProductoID)
+        {
+            Producto Producto = null;
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Mostrar_Producto_Por_Id", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ProductoID", ProductoID);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    Producto = new Producto
+                    {
+                        ProductoID = Convert.ToInt32(reader["ProductoID"]),
+                        Nombre = reader["Nombre"].ToString(),
+                        Descripcion = reader["Descripcion"].ToString(),
+                        PrecioUnitario = Convert.ToDecimal(reader["PrecioUnitario"]),
+                        CategoriaNombre = reader["Categoria"]?.ToString(), // Leer el alias "Categoria"
+                        TipoPanNombre = reader["TipoDePan"]?.ToString(),   // Leer el alias "TipoDePan"                                           
+                        ModificadoPor = reader["modificado_por"]?.ToString()
+                    };
+                }
+            }
+            return Producto;
+        }
+
+
+        public void ActualizarProducto(Producto ProductoActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_Producto", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@ProductoID", ProductoActualizado.ProductoID);
+                cmd.Parameters.AddWithValue("@Nombre", ProductoActualizado.Nombre);
+                cmd.Parameters.AddWithValue("@Descripcion", ProductoActualizado.Descripcion);
+                cmd.Parameters.AddWithValue("@PrecioUnitario", ProductoActualizado.PrecioUnitario);
+                cmd.Parameters.AddWithValue("@CategoriaID", ProductoActualizado.CategoriaID);
+                cmd.Parameters.AddWithValue("@TipoPanID", ProductoActualizado.TipoPanID);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
+
+
+
+
+
+        public void EliminarProducto(int ProductoID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_Producto @ProductoID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ProductoID", ProductoID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Producto: " + ex.Message);
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
 
     }
 }

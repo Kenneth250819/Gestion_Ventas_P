@@ -1,0 +1,53 @@
+﻿@model Gestion_Ventas_P.Models.Producto
+
+@{
+    ViewData["Title"] = "Actualizar Producto";
+}
+
+<h2>Actualizar Producto</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="ActualizarProducto" method="post">
+    <input type="hidden" asp-for="ProductoID" />
+
+    <div class="form-group">
+        <label asp-for="Nombre"></label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Descripcion"></label>
+        <textarea asp-for="Descripcion" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PrecioUnitario"></label>
+        <input asp-for="PrecioUnitario" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoriaID">Categoría</label>
+        <select asp-for="CategoriaID" asp-items="ViewBag.Categorias" class="form-control">
+            <option value="">Seleccione una categoría</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TipoPanID">Tipo de Pan</label>
+        <select asp-for="TipoPanID" asp-items="ViewBag.TiposDePan" class="form-control">
+            <option value="">Seleccione un tipo de pan</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a asp-action="Producto" class="btn btn-secondary">Cancelar</a>
+</form>

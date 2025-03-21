@@ -2,6 +2,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using Gestion_Ventas_P.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Gestion_Ventas_P.Controllers
 {
@@ -63,6 +64,31 @@ namespace Gestion_Ventas_P.Controllers
             List<Categoria> listaCategoria = _accesoDatos.MostrarCategoria();
             return View(listaCategoria);
         }
+
+        public IActionResult Producto()
+        {
+            try
+            {
+                // Obtener Categorías desde la base de datos
+                ViewBag.Categorias = new SelectList(_accesoDatos.ObtenerCategorias(), "CategoriaID", "Nombre");
+
+                // Obtener Tipos de Pan desde la base de datos
+                ViewBag.TiposDePan = new SelectList(_accesoDatos.ObtenerTiposDePan(), "TipoPanID", "Nombre");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al cargar los datos: " + ex.Message;
+            }
+            
+            return View();
+        }
+        
+        public IActionResult VerProductos()
+        {
+            List<Producto> listaProducto = _accesoDatos.MostrarProducto();
+            return View(listaProducto);
+        }
+
 
 
         public IActionResult ActualizarTipoDePan(int id)
@@ -263,6 +289,81 @@ namespace Gestion_Ventas_P.Controllers
 
             return RedirectToAction("Categoria");
         }
+
+
+
+        [HttpPost]
+        public IActionResult AgregarProducto(Producto ProductoNuevo)
+        {
+
+            try
+            {
+                _accesoDatos.AgregarProductos(ProductoNuevo);
+                TempData["SuccessMessage"] = "Producto Agregado correctamente.";
+                return RedirectToAction("Producto");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al agregar la Producto: " + ex.Message;
+                // Recargar las listas en caso de error
+                ViewBag.Categorias = new SelectList(_accesoDatos.ObtenerCategorias(), "CategoriaID", "Nombre");
+                ViewBag.TiposDePan = new SelectList(_accesoDatos.ObtenerTiposDePan(), "TipoPanID", "Nombre");
+            }
+            List<Producto> listaProducto = _accesoDatos.MostrarProducto();
+            return View("Producto", listaProducto);
+
+        }
+
+
+        public IActionResult ActualizarProducto(int id)
+        {
+            Producto Producto = _accesoDatos.ObtenerMostrarProductoPorID(id);
+            if (Producto == null)
+            {
+                return NotFound();
+            }
+            // Obtener las listas de categorías y tipos de pan para los dropdowns
+            ViewBag.Categorias = new SelectList(_accesoDatos.ObtenerCategorias(), "CategoriaID", "Nombre");
+            ViewBag.TiposDePan = new SelectList(_accesoDatos.ObtenerTiposDePan(), "TipoPanID", "Nombre");
+            return View(Producto);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarProducto(Producto ProductoActualizado)
+        {
+            try
+            {
+                _accesoDatos.ActualizarProducto(ProductoActualizado);
+                TempData["SuccessMessage"] = "Producto actualizada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerProductos");
+        }
+
+
+        [HttpPost]
+        public IActionResult EliminarProducto(int ProductoID)
+        {
+            try
+            {
+                _accesoDatos.EliminarProducto(ProductoID);
+                TempData["Mensaje"] = "Producto eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerProductos");
+        }
+
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

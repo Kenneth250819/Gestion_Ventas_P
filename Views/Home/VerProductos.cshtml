@@ -1,0 +1,68 @@
+﻿@model List<Gestion_Ventas_P.Models.Producto>
+
+@{
+    ViewData["Title"] = "Lista de Producto";
+}
+
+<h2>Agregar Producto</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<hr />
+<h2>Lista de Productos</h2>
+<table class=" table table-bordered">
+    <thead>
+        <tr>
+            <th>ID Producto</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio Unitario</th>
+            <th>Categoría</th>
+            <th>Tipo de Pan</th>
+            <th>Fecha de Adición</th>
+            <th>Adicionado Por</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || Model.Count == 0)
+        {
+            <tr>
+                <td colspan="13" class="text-center">No hay Productos registrados.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var producto in Model)
+            {
+                <tr>
+                    <td>@producto.ProductoID</td>
+                    <td>@producto.Nombre</td>
+                    <td>@producto.Descripcion</td>
+                    <td>@producto.PrecioUnitario</td>
+                    <td>@producto.CategoriaNombre</td>
+                    <td>@producto.TipoPanNombre</td>
+                    <td>@producto.FechaAdicion</td>
+                    <td>@producto.AdicionadoPor</td>
+                    <td>
+                        <a href="@Url.Action("ActualizarProducto", "Home", new { id = producto.ProductoID })" class="btn btn-warning btn-sm">Actualizar</a>
+                        <form asp-action="EliminarProducto" method="post" style="display:inline;">
+                            <input type="hidden" name="ProductoID" value="@producto.ProductoID" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este Producto?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a asp-action="Producto" class="btn btn-secondary mt-3">Volver Atras</a>
