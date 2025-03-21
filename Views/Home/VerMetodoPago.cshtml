@@ -1,0 +1,55 @@
+﻿@model List<Gestion_Ventas_P.Models.MetodoPago>
+
+@{
+    ViewData["Title"] = "Lista de Metodo de Pago";
+}
+
+<h2>Lista de Ventas</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<hr />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID MetodoPago</th>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || Model.Count == 0)
+        {
+            <tr>
+                <td colspan="8" class="text-center">No hay Metodo de Pago registrado.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var MetodoPago in Model)
+            {
+                <tr>
+                    <td>@MetodoPago.MetodoPagoID</td>
+                    <td>@MetodoPago.Nombre</td>
+                    <td>
+                        <a href="@Url.Action("ActualizarMetodoPago", "Home", new { id = MetodoPago.MetodoPagoID })" class="btn btn-warning btn-sm">Actualizar</a>
+                        <form asp-action="EliminarMetodoPago" method="post" style="display:inline;">
+                            <input type="hidden" name="MetodoPagoID" value="@MetodoPago.MetodoPagoID" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta venta?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a asp-action="MetodoPago" class="btn btn-secondary mt-3">Volver Atrás</a>

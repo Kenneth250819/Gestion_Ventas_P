@@ -1,0 +1,36 @@
+﻿@model Gestion_Ventas_P.Models.MetodoPago
+
+@{
+    ViewData["Title"] = "Agregar Método de Pago";
+}
+
+<h2>Agregar Método de Pago</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="AgregarMetodoPago" method="post">
+     
+    <div class="form-group">
+        <label asp-for="Nombre">Nombre</label>
+        <select asp-for="Nombre" class="form-control">
+            <option value="Tarjeta Credito O Debito">Tarjeta de Credito O Debito</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="SinpeMovil">Sinpe Movil</option>
+            <option value="Cheque">Cheque</option>
+            <option value="PayPal">PayPal</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Agregar Método de Pago</button>
+    
+</form>
+<a asp-action="index" class="btn btn-secondary mt-3">Volver al Inicio</a>
+<a asp-action="VerMetodoPago" class="btn btn-secondary mt-3">Ver la Lista de Metodos de pago</a>

@@ -99,7 +99,12 @@ namespace Gestion_Ventas_P.Controllers
             return View();
         }
 
-
+        public IActionResult PagoCliente() 
+        {
+            ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+            ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+            return View();
+        }
 
 
         public IActionResult VerProductos()
@@ -113,7 +118,19 @@ namespace Gestion_Ventas_P.Controllers
             List<Venta> listaVenta = _accesoDatos.MostrarVenta();
             return View(listaVenta);
         }
+       
+        public IActionResult VerMetodoPago()
+        {
+            List<MetodoPago> listaMetodoPago = _accesoDatos.MostrarMetodoPago();
+            return View(listaMetodoPago);
+        }
 
+        public IActionResult VerPagoCliente()
+        {
+            List<PagoCliente> listaPagoCliente = _accesoDatos.VerPagoCliente();
+            return View(listaPagoCliente);
+        }
+   
 
         public IActionResult ActualizarTipoDePan(int id)
         {
@@ -127,7 +144,11 @@ namespace Gestion_Ventas_P.Controllers
             return View(TipoPan);
         }
 
-
+        public IActionResult MetodoPago()
+        {
+            ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+            return View();
+        }
 
         public IActionResult CrearCliente()
         {
@@ -455,6 +476,150 @@ namespace Gestion_Ventas_P.Controllers
             }
 
             return RedirectToAction("VerVentas");
+        }
+
+
+        [HttpPost]
+        public IActionResult AgregarMetodoPago(MetodoPago MetodoPagoNuevo)
+        {
+            try
+            {
+
+                // Llamar al método para agregar la venta
+                _accesoDatos.AgregarMetodoPago(MetodoPagoNuevo);
+
+                TempData["SuccessMessage"] = "MetodoPago registrado correctamente.";
+                return RedirectToAction("MetodoPago"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al registrar el MetodoPago: " + ex.Message;
+                return View("MetodoPago");
+            }
+        }
+
+        public IActionResult ActualizarMetodoPago(int id)
+        {
+            MetodoPago MetodoPago = _accesoDatos.ObtenerMetodoPagoPorID(id);
+            if (MetodoPago == null)
+            {
+                return NotFound();
+            }
+            return View(MetodoPago);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarMetodoPago(MetodoPago MetodoPagoActualizado)
+        {
+            try
+            {
+                _accesoDatos.ActualizarMetodoPago(MetodoPagoActualizado);
+                TempData["SuccessMessage"] = "Metodo de Pago actualizado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerMetodoPago");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarMetodoPago(int MetodoPagoID)
+        {
+            try
+            {
+                _accesoDatos.EliminarMetodoPago(MetodoPagoID);
+                TempData["Mensaje"] = "Metodo de Pago eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerMetodoPago");
+        }
+
+
+        [HttpPost]
+        public IActionResult AgregarPagoCliente(PagoCliente PagoClienteNuevo)
+        {
+            try
+            {
+                ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+                ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+                // Llamar al método para agregar la venta
+                _accesoDatos.AgregarPagoCliente(PagoClienteNuevo);
+
+                TempData["SuccessMessage"] = "Pago de Cliente registrado correctamente.";
+                return RedirectToAction("PagoCliente"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+                ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+                TempData["ErrorMessage"] = "Error al registrar el MetodoPago: " + ex.Message;
+                return View("PagoCliente");
+            }
+        }
+
+        public IActionResult ActualizarPagoCliente(int id)
+        {
+            PagoCliente PagoCliente = _accesoDatos.ObtenerPagoClientePorId(id);
+            if (PagoCliente == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+            ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+            // Asegurarse de que las listas no sean nulas
+            var ventas = _accesoDatos.MostrarVenta() ?? new List<Venta>();
+            var metodosPago = _accesoDatos.MostrarMetodoPago() ?? new List<MetodoPago>();
+
+            // Verificar si las listas están vacías
+            if (!ventas.Any() || !metodosPago.Any())
+            {
+                TempData["ErrorMessage"] = "No hay ventas o métodos de pago disponibles.";
+                return RedirectToAction("VerPagoCliente");
+            }
+
+            // Pasar los datos a la vista
+            ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+            ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+
+            return View(PagoCliente);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarPagoCliente(PagoCliente PagoClienteActualizado)
+        {
+            try
+            {              
+                _accesoDatos.ActualizarPagoCliente(PagoClienteActualizado);
+                TempData["SuccessMessage"] = "Pago actualizado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerPagoCliente");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarPagoCliente(int PagoClienteID)
+        {
+            try
+            {
+                _accesoDatos.EliminarPagoCliente(PagoClienteID);
+                TempData["Mensaje"] = "Pago de Cliente eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerPagoCliente");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

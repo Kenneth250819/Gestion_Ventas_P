@@ -1,0 +1,38 @@
+﻿@model Gestion_Ventas_P.Models.MetodoPago
+
+@{
+    ViewData["Title"] = "Actualizar Método de Pago";
+}
+
+<h2>Actualizar Método de Pago</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="ActualizarMetodoPago" method="post">
+    <input type="hidden" asp-for="MetodoPagoID" />
+
+    <div class="form-group">
+        <label asp-for="Nombre">Nombre</label>
+        <select asp-for="Nombre" class="form-control">
+            <option value="Tarjeta Credito O Debito">Tarjeta de Credito O Debito</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="SinpeMovil">Sinpe Movil</option>
+            <option value="Cheque">Cheque</option>
+            <option value="PayPal">PayPal</option>
+        </select>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    
+</form>
+<a asp-action="VerMetodoPago" class="btn btn-secondary">Volver Atras</a>
+

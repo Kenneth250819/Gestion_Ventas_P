@@ -113,7 +113,7 @@ namespace Gestion_Ventas_P.Models
                         Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null,
                         FechaNacimiento = reader["FechaNacimiento"] != DBNull.Value ? (DateTime?)reader["FechaNacimiento"] : null,
                         Nacionalidad = reader["Nacionalidad"] != DBNull.Value ? reader["Nacionalidad"].ToString() : null,
-                        AdicionadoPor = reader["adicionado_por"].ToString() 
+                        AdicionadoPor = reader["adicionado_por"].ToString()
                     });
                 }
             }
@@ -172,7 +172,7 @@ namespace Gestion_Ventas_P.Models
                 cmd.Parameters.AddWithValue("@Email", cliente.Email);
                 cmd.Parameters.AddWithValue("@FechaNacimiento", (object)cliente.FechaNacimiento ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Nacionalidad", cliente.Nacionalidad);
-                cmd.Parameters.AddWithValue("@modificado_por", "Admin"); 
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
 
                 cmd.ExecuteNonQuery();
             }
@@ -208,11 +208,11 @@ namespace Gestion_Ventas_P.Models
                 {
                     string query = "Exec sp_Insertar_TipoPan  @Nombre, @Descripcion,  @adicionado_por";
                     using (SqlCommand cmd = new SqlCommand(query, con))
-                    {   
+                    {
                         cmd.Parameters.AddWithValue("@Nombre", TipoNuevo.Nombre);
                         cmd.Parameters.AddWithValue("@Descripcion", TipoNuevo.Descripcion);
                         cmd.Parameters.AddWithValue("@adicionado_por", TipoNuevo.AdicionadoPor);
-                      
+
 
                         con.Open();
                         cmd.ExecuteNonQuery();
@@ -243,12 +243,12 @@ namespace Gestion_Ventas_P.Models
                             {
                                 TipoDePan pan = new TipoDePan
                                 {
-                                    TipoPanID = Convert.ToInt32(reader["TipoPanID"]),                                 
+                                    TipoPanID = Convert.ToInt32(reader["TipoPanID"]),
                                     Nombre = reader["Nombre"].ToString(),
                                     Descripcion = reader["Descripcion"].ToString(),
                                     FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
                                     AdicionadoPor = reader["adicionado_por"].ToString(),
-                                   
+
                                 };
                                 listaTipoDePan.Add(pan);
                             }
@@ -302,7 +302,7 @@ namespace Gestion_Ventas_P.Models
 
                 cmd.Parameters.AddWithValue("@TipoPanID", PanActualizado.TipoPanID);
                 cmd.Parameters.AddWithValue("@Nombre", PanActualizado.Nombre);
-                cmd.Parameters.AddWithValue("@Descripcion", PanActualizado.Descripcion);           
+                cmd.Parameters.AddWithValue("@Descripcion", PanActualizado.Descripcion);
                 cmd.Parameters.AddWithValue("@modificado_por", "Admin");
 
                 cmd.ExecuteNonQuery();
@@ -757,7 +757,7 @@ namespace Gestion_Ventas_P.Models
                 {
                     venta = new Venta
                     {
-                        VentaID = Convert.ToInt32(reader["VentaID"]),                    
+                        VentaID = Convert.ToInt32(reader["VentaID"]),
                         ClienteNombre = reader["Cliente"].ToString(), // Si el SP devuelve el nombre del cliente
                         FechaVenta = Convert.ToDateTime(reader["FechaVenta"]),
                         Total = Convert.ToDecimal(reader["Total"]),
@@ -815,7 +815,284 @@ namespace Gestion_Ventas_P.Models
         }
 
 
+        public void AgregarMetodoPago(MetodoPago MetodoPagoNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_MetodoPago  @Nombre";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Nombre", MetodoPagoNuevo.Nombre);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar el Metodo de Pago: " + ex.Message);
+                }
+            }
+        }
 
+
+        public List<MetodoPago> MostrarMetodoPago()
+        {
+            List<MetodoPago> listaMetodoPago = new List<MetodoPago>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_MetodoPago";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                MetodoPago men = new MetodoPago
+                                {
+                                    MetodoPagoID = Convert.ToInt32(reader["MetodoPagoID"]),
+                                    Nombre = reader["Nombre"].ToString(),
+
+                                };
+                                listaMetodoPago.Add(men);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de Metodo de Pago: " + ex.Message);
+                }
+            }
+
+            return listaMetodoPago;
+        }
+
+
+        public MetodoPago ObtenerMetodoPagoPorID(int MetodoPagoID)
+        {
+            MetodoPago MetodoPago = null;
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Mostrar_MetodoPago_Por_Id", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@MetodoPagoID", MetodoPagoID);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    MetodoPago = new MetodoPago
+                    {
+                        MetodoPagoID = Convert.ToInt32(reader["MetodoPagoID"]),
+                        Nombre = reader["Nombre"].ToString(), // Si el SP devuelve el nombre del cliente
+
+                    };
+                }
+            }
+            return MetodoPago;
+        }
+
+        public void ActualizarMetodoPago(MetodoPago MetodoPagoActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_MetodoPago", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@MetodoPagoID", MetodoPagoActualizado.MetodoPagoID);
+                cmd.Parameters.AddWithValue("@Nombre", MetodoPagoActualizado.Nombre);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
+        public void EliminarMetodoPago(int MetodoPagoID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_MetodoPago @MetodoPagoID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@MetodoPagoID", MetodoPagoID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Producto: " + ex.Message);
+                }
+            }
+        }
+
+        public void AgregarPagoCliente(PagoCliente PagoClienteNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_PagoCliente  @VentaID, @Monto, @FechaPago, @MetodoPagoID, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@VentaID", PagoClienteNuevo.VentaID);
+                        cmd.Parameters.AddWithValue("@Monto", PagoClienteNuevo.Monto);
+                        cmd.Parameters.AddWithValue("@FechaPago", PagoClienteNuevo.FechaPago);
+                        cmd.Parameters.AddWithValue("@MetodoPagoID", PagoClienteNuevo.MetodoPagoID);
+                        cmd.Parameters.AddWithValue("@adicionado_por", PagoClienteNuevo.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar la Venta: " + ex.Message);
+                }
+            }
+        }
+
+        public List<PagoCliente> VerPagoCliente()
+        {
+            List<PagoCliente> listaPagoCliente = new List<PagoCliente>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_PagoCliente";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                PagoCliente pag = new PagoCliente
+                                {
+                                    PagoClienteID = Convert.ToInt32(reader["PagoClienteID"]),
+                                    VentaID = Convert.ToInt32(reader["VentaID"]),
+                                    Cliente = reader["Cliente"].ToString(),
+                                    Monto = Convert.ToDecimal(reader["Monto"]),
+                                    FechaPago = Convert.ToDateTime(reader["FechaPago"]),
+                                    MetodoPagoNombre = reader["MetodoPago"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"]?.ToString()
+
+                                };
+                                listaPagoCliente.Add(pag);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de Metodo de Pago: " + ex.Message);
+                }
+            }
+
+            return listaPagoCliente;
+        }
+
+
+
+        public PagoCliente ObtenerPagoClientePorId(int PagoClienteID)
+        {
+            PagoCliente pagoCliente = null;
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "sp_Mostrar_PagoCliente_Por_Id"; // Procedimiento almacenado
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PagoClienteID", PagoClienteID);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                pagoCliente = new PagoCliente
+                                {
+                                    PagoClienteID = Convert.ToInt32(reader["PagoClienteID"]),
+                                    VentaID = Convert.ToInt32(reader["VentaID"]),
+                                    Cliente = reader["Cliente"].ToString(),
+                                    Monto = Convert.ToDecimal(reader["Monto"]),
+                                    FechaPago = Convert.ToDateTime(reader["FechaPago"]),
+                                    MetodoPagoNombre = reader["MetodoPago"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el pago del cliente: " + ex.Message);
+                }
+            }
+
+            return pagoCliente;
+        }
+
+
+        public void ActualizarPagoCliente(PagoCliente PagoClienteActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_PagoCliente", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@PagoClienteID", PagoClienteActualizado.PagoClienteID);
+                        cmd.Parameters.AddWithValue("@VentaID", PagoClienteActualizado.VentaID);
+                        cmd.Parameters.AddWithValue("@Monto", PagoClienteActualizado.Monto);
+                        cmd.Parameters.AddWithValue("@FechaPago", PagoClienteActualizado.FechaPago);
+                        cmd.Parameters.AddWithValue("@MetodoPagoID", PagoClienteActualizado.MetodoPagoID);
+                        cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void EliminarPagoCliente(int PagoClienteID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_PagoCliente @PagoClienteID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@PagoClienteID", PagoClienteID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Pago de Cliente: " + ex.Message);
+                }
+            }
+        }
 
 
 
@@ -827,3 +1104,5 @@ namespace Gestion_Ventas_P.Models
 
     }
 }
+    
+
