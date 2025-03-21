@@ -99,6 +99,13 @@ namespace Gestion_Ventas_P.Controllers
             return View();
         }
 
+        public IActionResult DetalleVenta()
+        {
+            ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+            return View();
+        }
+
         public IActionResult PagoCliente() 
         {
             ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
@@ -131,6 +138,11 @@ namespace Gestion_Ventas_P.Controllers
             return View(listaPagoCliente);
         }
    
+        public IActionResult VerDetalleVenta()
+        {
+            List<DetalleVenta> listaDetalleVenta = _accesoDatos.MostrarDetalleVenta();
+            return View(listaDetalleVenta);
+        }
 
         public IActionResult ActualizarTipoDePan(int id)
         {
@@ -621,6 +633,34 @@ namespace Gestion_Ventas_P.Controllers
 
             return RedirectToAction("VerPagoCliente");
         }
+
+        [HttpPost]
+        public IActionResult AgregarDetalleVenta(DetalleVenta DetalleVentaNueva)
+        {
+            try
+            {
+                ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+                ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+                // Llamar al método para agregar la venta
+                _accesoDatos.AgregarDetalleVenta(DetalleVentaNueva);
+
+                TempData["SuccessMessage"] = "Detalle de Venta registrado correctamente.";
+                return RedirectToAction("DetalleVenta"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+                ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+                TempData["ErrorMessage"] = "Error al registrar el Detalle de Venta: " + ex.Message;
+                return View("DetalleVenta");
+            }
+        }
+
+
+
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

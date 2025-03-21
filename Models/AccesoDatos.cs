@@ -1095,11 +1095,75 @@ namespace Gestion_Ventas_P.Models
         }
 
 
+        public void AgregarDetalleVenta(DetalleVenta DetalleVentaNueva)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_DetalleVenta  @VentaID, @ProductoID, @Cantidad, @PrecioUnitario, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@VentaID", DetalleVentaNueva.VentaID);
+                        cmd.Parameters.AddWithValue("@ProductoID", DetalleVentaNueva.ProductoID);
+                        cmd.Parameters.AddWithValue("@Cantidad", DetalleVentaNueva.Cantidad);
+                        cmd.Parameters.AddWithValue("@PrecioUnitario", DetalleVentaNueva.PrecioUnitario);
+                        cmd.Parameters.AddWithValue("@adicionado_por", DetalleVentaNueva.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar el detalle de Venta: " + ex.Message);
+                }
+            }
+        }
 
 
+        public List<DetalleVenta> MostrarDetalleVenta()
+        {
+            List<DetalleVenta> listaDetalleVenta = new List<DetalleVenta>();
 
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_DetallesVenta";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DetalleVenta det = new DetalleVenta
+                                {
+                                    DetalleVentaID = Convert.ToInt32(reader["DetalleVentaID"]),
+                                    VentaID = Convert.ToInt32(reader["VentaID"]),  // Ahora es solo el ID de la venta
+                                    ClienteVenta = reader["Cliente"].ToString(),// 
+                                    ProductoID = Convert.ToInt32(reader["ProductoID"]),  // ID del producto
+                                    NombreProducto = reader["Producto"].ToString(),  // Nombre del producto
+                                    Cantidad = Convert.ToInt32(reader["Cantidad"]),
+                                    PrecioUnitario = Convert.ToDecimal(reader["PrecioUnitario"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"])
 
+                                };
+                                listaDetalleVenta.Add(det);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de Metodo de Pago: " + ex.Message);
+                }
+            }
 
+            return listaDetalleVenta;
+        }
 
 
     }

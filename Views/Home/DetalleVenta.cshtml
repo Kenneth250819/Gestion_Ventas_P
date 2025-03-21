@@ -1,0 +1,57 @@
+﻿@model Gestion_Ventas_P.Models.DetalleVenta
+
+@{
+    ViewBag.Title = "Agregar Detalle de Venta";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+<h2>Agregar Detalle de Venta</h2>
+
+<form asp-action="AgregarDetalleVenta" method="post">
+    <div class="form-group">
+        <label asp-for="VentaID" class="control-label">Cliente de Venta</label>
+        <select asp-for="VentaID" asp-items="ViewBag.Ventas" class="form-control">
+            <option value="">Seleccione una Venta</option>
+        </select>
+        <span asp-validation-for="VentaID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductoID" class="control-label">Productos</label>
+        <select asp-for="ProductoID" asp-items="ViewBag.Productos" class="form-control">
+            <option value="">Seleccione una Venta</option>
+        </select>
+        <span asp-validation-for="VentaID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cantidad" class="control-label">Cantidad</label>
+        <input asp-for="Cantidad" type="number" class="form-control" min="1" />
+        <span asp-validation-for="Cantidad" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PrecioUnitario" class="control-label">Precio Unitario</label>
+        <input asp-for="PrecioUnitario" type="number" class="form-control" step="0.01" min="0" />
+        <span asp-validation-for="PrecioUnitario" class="text-danger"></span>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="AdicionadoPor" class="control-label">Adicionado Por</label>
+        <input asp-for="AdicionadoPor" class="form-control" />
+        <span asp-validation-for="AdicionadoPor" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar Pago</button>
+
+</form>
+<a asp-action="index" class="btn btn-secondary">Volver al Inicio</a>
+<a asp-action="VerDetalleVenta" class="btn btn-secondary">Ver lista de Detalles de Ventas</a>
