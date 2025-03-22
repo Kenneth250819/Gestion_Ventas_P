@@ -2,17 +2,119 @@
     ViewData["Title"] = "Menú Principal";
 }
 
-<h2>Menú Principal</h2>
+<h2 class="text-center mb-4">Menú Principal</h2>
 
-<div class="d-flex flex-column align-items-start" role="group" aria-label="Menu">
-    <a href="@Url.Action("CrearCliente", "Home")" class="btn btn-primary"> Clientes </a>
-    <a href="@Url.Action("TipoDePan", "Home")" class="btn btn-warning">Tipos de Pan</a>
-    <a href="@Url.Action("Categoria", "Home")" class="btn btn-primary">Categorias</a>
-    <a href="@Url.Action("Producto", "Home")" class="btn btn-warning">Productos</a>
-    <a href="@Url.Action("Venta", "Home")" class="btn btn-primary">Ventas</a>
-    <a href="@Url.Action("MetodoPago", "Home")" class="btn btn-warning">Metodos de Pago</a>
-    <a href="@Url.Action("PagoCliente", "Home")" class="btn btn-primary">Pago de Clientes</a>
-    <a href="@Url.Action("DetalleVenta", "Home")" class="btn btn-warning">Detalle de Venta</a>
-    <a href="@Url.Action("Inventario", "Home")" class="btn btn-primary">Inventarios</a>
-    <a href="@Url.Action("Proveedor", "Home")" class="btn btn-warning">Proveedores</a>
+<div class="container">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-user fa-2x text-primary"></i>
+                    <h5 class="card-title mt-2">Clientes</h5>
+                    <a href="@Url.Action("CrearCliente", "Home")" class="btn btn-primary w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-bread-slice fa-2x text-warning"></i>
+                    <h5 class="card-title mt-2">Tipos de Pan</h5>
+                    <a href="@Url.Action("TipoDePan", "Home")" class="btn btn-warning w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-list-alt fa-2x text-primary"></i>
+                    <h5 class="card-title mt-2">Categorías</h5>
+                    <a href="@Url.Action("Categoria", "Home")" class="btn btn-primary w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-box fa-2x text-warning"></i>
+                    <h5 class="card-title mt-2">Productos</h5>
+                    <a href="@Url.Action("Producto", "Home")" class="btn btn-warning w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-shopping-cart fa-2x text-primary"></i>
+                    <h5 class="card-title mt-2">Ventas</h5>
+                    <a href="@Url.Action("Venta", "Home")" class="btn btn-primary w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-credit-card fa-2x text-warning"></i>
+                    <h5 class="card-title mt-2">Métodos de Pago</h5>
+                    <a href="@Url.Action("MetodoPago", "Home")" class="btn btn-warning w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-money-bill-wave fa-2x text-primary"></i>
+                    <h5 class="card-title mt-2">Pago de Clientes</h5>
+                    <a href="@Url.Action("PagoCliente", "Home")" class="btn btn-primary w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-receipt fa-2x text-warning"></i>
+                    <h5 class="card-title mt-2">Detalle de Venta</h5>
+                    <a href="@Url.Action("DetalleVenta", "Home")" class="btn btn-warning w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-warehouse fa-2x text-primary"></i>
+                    <h5 class="card-title mt-2">Inventarios</h5>
+                    <a href="@Url.Action("Inventario", "Home")" class="btn btn-primary w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-truck fa-2x text-warning"></i>
+                    <h5 class="card-title mt-2">Proveedores</h5>
+                    <a href="@Url.Action("Proveedor", "Home")" class="btn btn-warning w-100">Ir</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+</style>
+
