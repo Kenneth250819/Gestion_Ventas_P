@@ -1,0 +1,51 @@
+﻿@model DetalleVenta
+
+@{
+    ViewData["Title"] = "Actualizar Detalle de Venta";
+}
+
+<h2>Actualizar Detalle de Venta</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="ActualizarDetalleVenta" method="post">
+    <input type="hidden" asp-for="DetalleVentaID" />
+    <input type="hidden" asp-for="FechaAdicion" />
+    <div class="form-group">
+        <label asp-for="VentaID" class="control-label">Venta</label>
+        <select asp-for="VentaID" asp-items="ViewBag.Ventas" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductoID" class="control-label">Producto</label>
+        <select asp-for="ProductoID" asp-items="ViewBag.Productos" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cantidad" class="control-label">Cantidad</label>
+        <input asp-for="Cantidad" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PrecioUnitario" class="control-label">Precio Unitario</label>
+        <input asp-for="PrecioUnitario" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AdicionadoPor" class="control-label">Adicionado por</label>
+        <input asp-for="AdicionadoPor" class="form-control" readonly />
+    </div>
+
+    
+
+    <button type="submit" class="btn btn-primary">Actualizar</button>
+    <a asp-action="VerDetalleVenta" class="btn btn-secondary">Cancelar</a>
+</form>

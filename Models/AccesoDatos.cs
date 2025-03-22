@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Gestion_Ventas_P.Models
 {
@@ -1165,6 +1166,404 @@ namespace Gestion_Ventas_P.Models
             return listaDetalleVenta;
         }
 
+        public DetalleVenta ObtenerDetalleVentaPorId(int DetalleVentaID)
+        {
+            DetalleVenta DetalleVenta = null;
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "sp_Mostrar_DetalleVenta_Por_Id"; // Procedimiento almacenado
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@DetalleVentaID", DetalleVentaID);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                DetalleVenta = new DetalleVenta
+                                {
+                                    DetalleVentaID = Convert.ToInt32(reader["DetalleVentaID"]),
+                                    VentaID = Convert.ToInt32(reader["VentaID"]),
+                                    ClienteVenta = reader["Cliente"].ToString(),
+                                    ProductoID = Convert.ToInt32(reader["ProductoID"]),
+                                    NombreProducto = reader["Producto"].ToString(),
+                                    Cantidad = Convert.ToInt32(reader["Cantidad"]),
+                                    PrecioUnitario = Convert.ToDecimal(reader["PrecioUnitario"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el Detalle de Venta del cliente: " + ex.Message);
+                }
+            }
+
+            return DetalleVenta;
+        }
+
+
+        public void ActualizarDetalleVenta(DetalleVenta DetalleVentaActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_DetalleVenta", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@DetalleVentaID", DetalleVentaActualizado.DetalleVentaID);
+                cmd.Parameters.AddWithValue("@VentaID", DetalleVentaActualizado.VentaID);
+                cmd.Parameters.AddWithValue("@ProductoID", DetalleVentaActualizado.ProductoID);
+                cmd.Parameters.AddWithValue("@Cantidad", DetalleVentaActualizado.Cantidad);
+                cmd.Parameters.AddWithValue("@PrecioUnitario", DetalleVentaActualizado.PrecioUnitario);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
+        public void EliminarDetalleVenta(int DetalleVentaID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_DetalleVenta @DetalleVentaID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@DetalleVentaID", DetalleVentaID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Detalle de Venta: " + ex.Message);
+                }
+            }
+        }
+
+
+        public void AgregarInventario(Inventario InventarioNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_Inventario  @ProductoID, @Cantidad, @FechaActualizacion, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ProductoID", InventarioNuevo.ProductoID);
+                        cmd.Parameters.AddWithValue("@Cantidad", InventarioNuevo.Cantidad);
+                        cmd.Parameters.AddWithValue("@FechaActualizacion", InventarioNuevo.FechaActualizacion);
+                        cmd.Parameters.AddWithValue("@adicionado_por", InventarioNuevo.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar en el Inventario: " + ex.Message);
+                }
+            }
+        }
+
+        public List<Inventario> MostrarInventario()
+        {
+            List<Inventario> listaInventario = new List<Inventario>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_Inventario"; // Asegúrate de que este sea el nombre correcto del procedimiento almacenado
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Inventario inv = new Inventario
+                                {
+                                    InventarioID = Convert.ToInt32(reader["InventarioID"]),
+                                    ProductoID = Convert.ToInt32(reader["ProductoID"]),
+                                    ProductoNombre = reader["Producto"].ToString(), // Nombre del producto desde la tabla Productos
+                                    Cantidad = Convert.ToInt32(reader["Cantidad"]),
+                                    FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                                listaInventario.Add(inv);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de inventario: " + ex.Message);
+                }
+            }
+
+            return listaInventario;
+        }
+
+        public Inventario ObtenerInventarioPorId(int InventarioID)
+        {
+            Inventario Inventario = null;
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "sp_Mostrar_Inventario_Por_Id"; // Procedimiento almacenado
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@InventarioID", InventarioID);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Inventario = new Inventario
+                                {
+                                    InventarioID = Convert.ToInt32(reader["InventarioID"]),
+                                    ProductoID = Convert.ToInt32(reader["ProductoID"]),
+                                    ProductoNombre = reader["Producto"].ToString(),
+                                    Cantidad = Convert.ToInt32(reader["Cantidad"]),
+                                    FechaActualizacion = Convert.ToDateTime(reader["FechaActualizacion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el Inventario: " + ex.Message);
+                }
+            }
+
+            return Inventario;
+        }
+
+
+        public void ActualizarInventario(Inventario InventarioActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_Inventario", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@InventarioID", InventarioActualizado.InventarioID);
+                cmd.Parameters.AddWithValue("@ProductoID", InventarioActualizado.ProductoID);
+                cmd.Parameters.AddWithValue("@Cantidad", InventarioActualizado.Cantidad);
+                cmd.Parameters.AddWithValue("@FechaActualizacion", InventarioActualizado.FechaActualizacion);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
+        public void EliminarInventario(int InventarioID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_Inventario @InventarioID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@InventarioID", InventarioID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Inventario: " + ex.Message);
+                }
+            }
+        }
+
+
+        public void AgregarProveedor(Proveedor ProveedorNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_Proveedor  @Nombre, @Contacto, @Telefono, @Email, @Direccion, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@Nombre", ProveedorNuevo.Nombre);
+                        cmd.Parameters.AddWithValue("@Contacto", ProveedorNuevo.Contacto);
+                        cmd.Parameters.AddWithValue("@Telefono", ProveedorNuevo.Telefono);
+                        cmd.Parameters.AddWithValue("@Email", ProveedorNuevo.Email);
+                        cmd.Parameters.AddWithValue("@Direccion", ProveedorNuevo.Direccion);
+                        cmd.Parameters.AddWithValue("@adicionado_por", ProveedorNuevo.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar  el Proveedor: " + ex.Message);
+                }
+            }
+        }
+
+        public List<Proveedor> MostrarProveedor()
+        {
+            List<Proveedor> listaProveedor = new List<Proveedor>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_Proveedores"; // Asegúrate de que este sea el nombre correcto del procedimiento almacenado
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Proveedor pro = new Proveedor
+                                {
+                                    ProveedorID = Convert.ToInt32(reader["ProveedorID"]),
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Contacto = reader["Contacto"].ToString(), // Nombre del producto desde la tabla Productos
+                                    Telefono = reader["Telefono"].ToString(),
+                                    Email = reader["Email"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                                listaProveedor.Add(pro);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de inventario: " + ex.Message);
+                }
+            }
+
+            return listaProveedor;
+        }
+
+        public Proveedor ObtenerProveedorPorId(int ProveedorID)
+        {
+            Proveedor Proveedor = null;
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "sp_Mostrar_Proveedor_Por_Id"; // Procedimiento almacenado
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@ProveedorID", ProveedorID);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Proveedor = new Proveedor
+                                {
+                                    ProveedorID = Convert.ToInt32(reader["ProveedorID"]),
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Contacto = reader["Contacto"].ToString(),
+                                    Telefono = reader["Telefono"].ToString(),
+                                    Email = reader["Email"].ToString(),
+                                    Direccion = reader["Direccion"].ToString(),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el Inventario: " + ex.Message);
+                }
+            }
+
+            return Proveedor;
+        }
+
+        public void ActualizarProveedor(Proveedor ProveedorActualizado)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_Proveedor", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@ProveedorID", ProveedorActualizado.ProveedorID);
+                cmd.Parameters.AddWithValue("@Nombre", ProveedorActualizado.Nombre);
+                cmd.Parameters.AddWithValue("@Contacto", ProveedorActualizado.Contacto);
+                cmd.Parameters.AddWithValue("@Telefono", ProveedorActualizado.Telefono);
+                cmd.Parameters.AddWithValue("@Email", ProveedorActualizado.Email);
+                cmd.Parameters.AddWithValue("@Direccion", ProveedorActualizado.Direccion);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void EliminarProveedor(int ProveedorID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_Proveedor @ProveedorID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ProveedorID", ProveedorID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Proveedor: " + ex.Message);
+                }
+            }
+        }
 
     }
 }

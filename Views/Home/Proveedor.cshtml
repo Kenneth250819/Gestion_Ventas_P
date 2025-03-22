@@ -1,0 +1,53 @@
+﻿@model Gestion_Ventas_P.Models.Proveedor
+
+@{
+    ViewData["Title"] = "Agregar Proveedor";
+}
+
+<h2>Agregar Proveedor</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="AgregarProveedor" method="post">
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Contacto" class="control-label">Contacto</label>
+        <input asp-for="Contacto" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Telefono" class="control-label">Teléfono</label>
+        <input asp-for="Telefono" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">Email</label>
+        <input asp-for="Email" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Direccion" class="control-label">Dirección</label>
+        <input asp-for="Direccion" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AdicionadoPor" class="control-label">Adicionado por</label>
+        <input asp-for="AdicionadoPor" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Agregar Proveedor</button>
+    <a asp-action="index" class="btn btn-secondary">Volver al Inicio</a>
+</form>
+<a asp-action="VerProveedor" class="btn btn-secondary">Ver Lista de Proveedores</a>

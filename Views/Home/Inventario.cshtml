@@ -1,0 +1,45 @@
+﻿@model Gestion_Ventas_P.Models.Inventario
+
+@{
+    ViewData["Title"] = "Agregar Inventario";
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<h2>Agregar Inventario</h2>
+
+<form asp-action="AgregarInventario" method="post">
+    <div class="form-group">
+        <label asp-for="ProductoID" class="control-label">Productos</label>
+        <select asp-for="ProductoID" asp-items="ViewBag.Productos" class="form-control">
+            <option value="">Seleccione una Producto</option>
+        </select>
+        <span asp-validation-for="ProductoID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cantidad" class="control-label"></label>
+        <input asp-for="Cantidad" class="form-control" type="number" min="1" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FechaActualizacion" class="control-label"></label>
+        <input asp-for="FechaActualizacion" class="form-control" type="datetime-local" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AdicionadoPor" class="control-label"></label>
+        <input asp-for="AdicionadoPor" class="form-control" type="text" maxlength="50" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>
+<a asp-action="VerInventario" class="btn btn-secondary">Ver Lista de Inventarios</a>
+<a asp-action="index" class="btn btn-secondary">Volver al Inicio</a>

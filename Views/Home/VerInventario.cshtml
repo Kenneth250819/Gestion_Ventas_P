@@ -1,0 +1,42 @@
+﻿@model List<Gestion_Ventas_P.Models.Inventario>
+
+@{
+    ViewBag.Title = "Lista de Inventarios";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>InventarioID</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Fecha de Adición</th>
+            <th>Fecha de Actualización</th>
+            <th>Adicionado Por</th>
+            <th>Acciones</th>          
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Inventario in Model)
+        {
+            <tr>
+                <td>@Inventario.InventarioID</td>
+                <td>@Inventario.ProductoNombre</td>
+                <td>@Inventario.Cantidad</td>
+                <td>@Inventario.FechaAdicion.ToString("dd/MM/yyyy")</td>
+                <td>@Inventario.FechaActualizacion.ToString("dd/MM/yyyy")</td>
+                <td>@Inventario.AdicionadoPor</td>              
+                <td>
+                    <a href="@Url.Action("ActualizarInventario", "Home", new { id = Inventario.InventarioID })" class="btn btn-warning btn-sm">Actualizar</a>
+                    <form asp-action="EliminarInventario" method="post" style="display:inline;">
+                        <input type="hidden" name="InventarioID" value="@Inventario.InventarioID" />
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar Detalle de la Venta?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Inventario" class="btn btn-secondary">Volver</a>

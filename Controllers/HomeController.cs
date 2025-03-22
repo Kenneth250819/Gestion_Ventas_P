@@ -113,6 +113,16 @@ namespace Gestion_Ventas_P.Controllers
             return View();
         }
 
+        public IActionResult Inventario() 
+        {
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+            return  View();
+        }
+
+        public IActionResult Proveedor()
+        {
+            return View();
+        }
 
         public IActionResult VerProductos()
         {
@@ -143,7 +153,18 @@ namespace Gestion_Ventas_P.Controllers
             List<DetalleVenta> listaDetalleVenta = _accesoDatos.MostrarDetalleVenta();
             return View(listaDetalleVenta);
         }
+        public IActionResult VerInventario()
+        {
+            List<Inventario> listaInventario = _accesoDatos.MostrarInventario();
+            return View(listaInventario);
+        }
 
+        public IActionResult VerProveedor() 
+        {
+            List<Proveedor> listaProveedor = _accesoDatos.MostrarProveedor();
+            return View(listaProveedor);
+        }
+        
         public IActionResult ActualizarTipoDePan(int id)
         {
             TipoDePan TipoPan = _accesoDatos.ObtenerTipoDePanPorID(id);
@@ -655,6 +676,202 @@ namespace Gestion_Ventas_P.Controllers
                 return View("DetalleVenta");
             }
         }
+
+        public IActionResult ActualizarDetalleVenta(int id)
+        {
+            DetalleVenta DetalleVenta = _accesoDatos.ObtenerDetalleVentaPorId(id);
+            if (DetalleVenta == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+            // Asegurarse de que las listas no sean nulas
+            var ventas = _accesoDatos.MostrarVenta() ?? new List<Venta>();
+            var productos = _accesoDatos.MostrarProducto() ?? new List<Producto>();
+
+            // Verificar si las listas están vacías
+            if (!ventas.Any() || !productos.Any())
+            {
+                TempData["ErrorMessage"] = "No hay ventas o productos disponibles.";
+                return RedirectToAction("VerDetalleVenta");
+            }
+
+            // Pasar los datos a la vista
+            ViewBag.Ventas = new SelectList(_accesoDatos.MostrarVenta(), "VentaID", "ClienteNombre");
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+
+            return View(DetalleVenta);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarDetalleVenta(DetalleVenta DetalleVentaActualizado)
+        {
+            try
+            {
+                _accesoDatos.ActualizarDetalleVenta(DetalleVentaActualizado);
+                TempData["SuccessMessage"] = "Detalle de Venta actualizado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerDetalleVenta");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarDetalleVenta(int DetalleVentaID)
+        {
+            try
+            {
+                _accesoDatos.EliminarDetalleVenta(DetalleVentaID);
+                TempData["Mensaje"] = "Detalle de Venta eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerDetalleVenta");
+        }
+
+        [HttpPost]
+        public IActionResult AgregarInventario(Inventario InventarioNuevo)
+        {
+            try
+            {
+                ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+                // Llamar al método para agregar la venta
+                _accesoDatos.AgregarInventario(InventarioNuevo);
+
+                TempData["SuccessMessage"] = "Producto registrado en Inventario correctamente.";
+                return RedirectToAction("Inventario"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+                TempData["ErrorMessage"] = "Error al registrar el en Inventario: " + ex.Message;
+                return View("Inventario");
+            }
+        }
+
+        public IActionResult ActualizarInventario(int id)
+        {
+            Inventario Inventario = _accesoDatos.ObtenerInventarioPorId(id);
+            if (Inventario == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+            // Asegurarse de que las listas no sean nulas
+            var productos = _accesoDatos.MostrarProducto() ?? new List<Producto>();
+
+            // Verificar si las listas están vacías
+            if (!productos.Any())
+            {
+                TempData["ErrorMessage"] = "No hay productos disponibles.";
+                return RedirectToAction("VerInventario");
+            }
+
+            // Pasar los datos a la vista
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+
+            return View(Inventario);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarInventario(Inventario InventarioActualizado)
+        {
+            try
+            {
+                _accesoDatos.ActualizarInventario(InventarioActualizado);
+                TempData["SuccessMessage"] = "Inventario actualizado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerInventario");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarInventario(int InventarioID)
+        {
+            try
+            {
+                _accesoDatos.EliminarInventario(InventarioID);
+                TempData["Mensaje"] = "Inventario eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerInventario");
+        }
+
+        [HttpPost]
+        public IActionResult AgregarProveedor(Proveedor ProveedorNuevo)
+        {
+            try
+            {
+                _accesoDatos.AgregarProveedor(ProveedorNuevo);
+
+                TempData["SuccessMessage"] = "Proveedor registrado Proveedor correctamente.";
+                return RedirectToAction("Proveedor"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al registrar Proveedor: " + ex.Message;
+                return View("Proveedor");
+            }
+        }
+
+        public IActionResult ActualizarProveedor(int id)
+        {
+            Proveedor Proveedor = _accesoDatos.ObtenerProveedorPorId(id);
+            if (Proveedor == null)
+            {
+                return NotFound();
+            }        
+         
+            return View(Proveedor);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarProveedor(Proveedor ProveedorActualizado)
+        {
+            try
+            {
+                _accesoDatos.ActualizarProveedor(ProveedorActualizado);
+                TempData["SuccessMessage"] = "Proveedor actualizado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerProveedor");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarProveedor(int ProveedorID)
+        {
+            try
+            {
+                _accesoDatos.EliminarProveedor(ProveedorID);
+                TempData["Mensaje"] = "Proveedor eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerProveedor");
+        }
+
 
 
 

@@ -1,0 +1,57 @@
+﻿@model List<Gestion_Ventas_P.Models.Proveedor>
+
+@{
+    ViewData["Title"] = "Proveedores";
+}
+
+<h2>Lista de Proveedores</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Dirección</th>
+            <th>Fecha Adición</th>
+            <th>Adicionado por</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Proveedor in Model)
+        {
+            <tr>
+                <td>@Proveedor.ProveedorID</td>
+                <td>@Proveedor.Nombre</td>
+                <td>@Proveedor.Contacto</td>
+                <td>@Proveedor.Telefono</td>
+                <td>@Proveedor.Email</td>
+                <td>@Proveedor.Direccion</td>
+                <td>@Proveedor.FechaAdicion</td>
+                <td>@Proveedor.AdicionadoPor</td>
+                <td>
+                    <a href="@Url.Action("ActualizarProveedor", "Home", new { id = Proveedor.ProveedorID })" class="btn btn-warning btn-sm">Actualizar</a>
+                    <form asp-action="EliminarProveedor" method="post" style="display:inline;">
+                        <input type="hidden" name="ProveedorID" value="@Proveedor.ProveedorID" />
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar Proveedor?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Proveedor")" class="btn btn-primary">Agregar Proveedor</a>
