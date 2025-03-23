@@ -1,0 +1,51 @@
+﻿@model List<Gestion_Ventas_P.Models.PagosProveedor>
+
+@{
+    ViewData["Title"] = "Lista de Pagos a Proveedores";
+}
+
+<h2>Lista de Pagos a Proveedores</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Pago ID</th>
+            <th>Compra ID</th>
+            <th>Monto</th>
+            <th>Fecha de Pago</th>
+            <th>Método de Pago</th>
+            <th>Adicionado Por</th>
+            <th>Fecha Adición</th>
+            <th>Fecha Modificacion</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var PagosProveedor in Model)
+        {
+            <tr>
+                <td>@PagosProveedor.PagoID</td>
+                <td>@PagosProveedor.CompraID</td>
+                <td>@PagosProveedor.Monto</td>
+                <td>@PagosProveedor.FechaPago.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@PagosProveedor.MetodoPagoNombre</td>
+                <td>@PagosProveedor.AdicionadoPor</td>
+                <td>@PagosProveedor.FechaAdicion.ToString("dd/MM/yyyy")</td>
+                <td>@PagosProveedor.FechaModificacion?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="@Url.Action("ActualizarPagosProveedor", "Home", new { id = PagosProveedor.PagoID })" class="btn btn-warning btn-sm">Actualizar</a>
+                    <form asp-action="EliminarPagosProveedor" method="post" style="display:inline;">
+                        <input type="hidden" name="PagoID" value="@PagosProveedor.PagoID" />
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este Pago de Cliente?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

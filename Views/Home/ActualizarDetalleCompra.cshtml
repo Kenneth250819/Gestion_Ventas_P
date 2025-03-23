@@ -1,0 +1,46 @@
+﻿@model Gestion_Ventas_P.Models.DetalleCompra
+
+@{
+    ViewData["Title"] = "Actualizar Compra";
+}
+
+<h2>Actualizar Compra</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="ActualizarDetalleCompra" method="post">
+    <input type="hidden" asp-for="DetalleCompraID" />
+
+    <div class="form-group">
+        <label asp-for="CompraID" class="control-label">CompraID</label>
+        <input asp-for="CompraID" class="form-control" type="number" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductoID">Productos</label>
+        <select asp-for="ProductoID" asp-items="ViewBag.Productos" class="form-control">
+            <option value="">Seleccione un Producto</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cantidad" class="control-label">Fecha de Compra</label>
+        <input asp-for="Cantidad" class="form-control" type="number" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PrecioUnitario" class="control-label">Total</label>
+        <input asp-for="PrecioUnitario" class="form-control" type="number" step="0.01" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Actualizar Detalle de Compra</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver al Inicio</a>
+</form>

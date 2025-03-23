@@ -1,0 +1,59 @@
+﻿@model List<Gestion_Ventas_P.Models.DetalleCompra>
+
+@{
+    ViewData["Title"] = "Lista de Detalles de Compra";
+}
+
+<h2>Lista de Detalles de Compra</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Detalle Compra ID</th>
+            <th>ID Compra</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario </th>
+            <th>Adicionado por</th>
+            <th>Fecha Adición</th>
+            <th>Modificado por</th>
+            <th>Fecha Modificación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var DetalleCompra in Model)
+        {
+            <tr>
+                <td>@DetalleCompra.DetalleCompraID</td>
+                <td>@DetalleCompra.CompraID</td>
+                <td>@DetalleCompra.NombreProducto.</td>
+                <td>@DetalleCompra.Cantidad</td>
+                <td>@DetalleCompra.PrecioUnitario</td>
+                <td>@DetalleCompra.AdicionadoPor</td>
+                <td>@DetalleCompra.FechaAdicion.ToString("yyyy-MM-dd")</td>
+                <td>@DetalleCompra.FechaModificacion?.ToString("yyyy-MM-dd")</td>
+                <td>@DetalleCompra.ModificadoPor</td>
+                <td>
+                    <a href="@Url.Action("ActualizarDetalleCompra", "Home", new { id = DetalleCompra.DetalleCompraID })" class="btn btn-warning btn-sm">Actualizar</a>
+                    <form asp-action="EliminarDetalleCompra" method="post" style="display:inline;">
+                        <input type="hidden" name="DetalleCompraID" value="@DetalleCompra.DetalleCompraID" />
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar la Compra?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="DetalleCompra" class="btn btn-secondary">Volver atras</a>
+

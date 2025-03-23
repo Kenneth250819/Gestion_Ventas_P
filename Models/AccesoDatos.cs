@@ -1742,6 +1742,305 @@ namespace Gestion_Ventas_P.Models
             }
         }
 
+        public List<DetalleCompra> MostrarDetalleCompra()
+        {
+            List<DetalleCompra> listaDetalleCompra = new List<DetalleCompra>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_DetalleCompra"; // Asegúrate de que este sea el nombre correcto del procedimiento almacenado
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DetalleCompra dec = new DetalleCompra
+                                {
+                                    DetalleCompraID = Convert.ToInt32(reader["DetalleCompraID"]),
+                                    CompraID = Convert.ToInt32(reader["CompraID"]),
+                                    ProductoID = Convert.ToInt32(reader["ProductoID"]),
+                                    NombreProducto = reader["ProductoNombre"].ToString(),
+                                    Cantidad = Convert.ToInt32(reader["Cantidad"]), // Nombre del producto desde la tabla Productos
+                                    PrecioUnitario = Convert.ToInt32(reader["PrecioUnitario"]),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                                listaDetalleCompra.Add(dec);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de inventario: " + ex.Message);
+                }
+            }
+
+            return listaDetalleCompra;
+        }
+
+        public DetalleCompra ObtenerDetalleCompraPorId(int DetalleCompraID)
+        {
+            DetalleCompra DetalleCompra = null;
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "sp_Mostrar_DetalleCompra_Por_Id"; // Procedimiento almacenado
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@DetalleCompraID", DetalleCompraID);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                DetalleCompra = new DetalleCompra
+                                {
+                                    DetalleCompraID = Convert.ToInt32(reader["DetalleCompraID"]),
+                                    CompraID = Convert.ToInt32(reader["CompraID"]),
+                                    ProductoID = Convert.ToInt32(reader["ProductoID"]),
+                                    NombreProducto = reader["ProductoNombre"].ToString(),
+                                    Cantidad = Convert.ToInt32(reader["Cantidad"]), // Nombre del producto desde la tabla Productos
+                                    PrecioUnitario = Convert.ToInt32(reader["PrecioUnitario"]),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el Inventario: " + ex.Message);
+                }
+            }
+
+            return DetalleCompra;
+        }
+
+        public void ActualizarDetalleCompra(DetalleCompra DetalleCompraActualizada)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_DetalleCompra", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@DetalleCompraID", DetalleCompraActualizada.DetalleCompraID);
+                cmd.Parameters.AddWithValue("@CompraID", DetalleCompraActualizada.CompraID);
+                cmd.Parameters.AddWithValue("@ProductoID", DetalleCompraActualizada.ProductoID);
+                cmd.Parameters.AddWithValue("@Cantidad", DetalleCompraActualizada.Cantidad);
+                cmd.Parameters.AddWithValue("@PrecioUnitario", DetalleCompraActualizada.PrecioUnitario);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void EliminarDetalleCompra(int DetalleCompraID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_DetalleCompra @DetalleCompraID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@DetalleCompraID", DetalleCompraID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Detalle de Compra: " + ex.Message);
+                }
+            }
+        }
+
+        public void AgregarPagosProveedor(PagosProveedor PagosProveedorNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_PagoProveedor @CompraID, @Monto, @FechaPago, @MetodoPagoID, @fecha_adicion, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@CompraID", PagosProveedorNuevo.CompraID);
+                        cmd.Parameters.AddWithValue("@Monto", PagosProveedorNuevo.Monto);
+                        cmd.Parameters.AddWithValue("@FechaPago", PagosProveedorNuevo.FechaPago);
+                        cmd.Parameters.AddWithValue("@MetodoPagoID", PagosProveedorNuevo.MetodoPagoID);
+                        cmd.Parameters.AddWithValue("@fecha_adicion", PagosProveedorNuevo.FechaAdicion);
+                        cmd.Parameters.AddWithValue("@adicionado_por", PagosProveedorNuevo.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar el Pago a Proveedor: " + ex.Message);
+                }
+            }
+        }
+
+        public List<PagosProveedor> MostrarPagosProveedor()
+        {
+            List<PagosProveedor> listaPagosProveedor = new List<PagosProveedor>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_PagoProveedor"; // Asegúrate de que este sea el nombre correcto del procedimiento almacenado
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                PagosProveedor pap = new PagosProveedor
+                                {
+                                    PagoID = Convert.ToInt32(reader["PagoID"]),
+                                    CompraID = Convert.ToInt32(reader["CompraID"]),
+                                    Monto = Convert.ToInt32(reader["Monto"]),
+                                    FechaPago = Convert.ToDateTime(reader["FechaPago"]),
+                                    MetodoPagoID = Convert.ToInt32(reader["MetodoPagoID"]), // Nombre del producto desde la tabla Productos
+                                    MetodoPagoNombre = reader["MetodoPago"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                                listaPagosProveedor.Add(pap);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de inventario: " + ex.Message);
+                }
+            }
+
+            return listaPagosProveedor;
+        }
+
+        public PagosProveedor ObtenerPagosProveedorPorId(int PagoID)
+        {
+            PagosProveedor PagosProveedor = null;
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "sp_Mostrar_PagoProveedor_Por_Id"; // Procedimiento almacenado
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@PagoID", PagoID);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                PagosProveedor = new PagosProveedor
+                                {
+                                    PagoID = Convert.ToInt32(reader["PagoID"]),
+                                    CompraID = Convert.ToInt32(reader["CompraID"]),
+                                    Monto = Convert.ToInt32(reader["Monto"]),
+                                    FechaPago = Convert.ToDateTime(reader["FechaPago"]),
+                                    MetodoPagoID = Convert.ToInt32(reader["MetodoPagoID"]), // Nombre del producto desde la tabla Productos
+                                    MetodoPagoNombre = reader["MetodoPago"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el Inventario: " + ex.Message);
+                }
+            }
+
+            return PagosProveedor;
+        }
+
+
+        public void ActualizarPagosProveedor(PagosProveedor PagosProveedorActualizada)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_PagoProveedor", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@PagoID", PagosProveedorActualizada.PagoID);
+                cmd.Parameters.AddWithValue("@CompraID", PagosProveedorActualizada.CompraID);
+                cmd.Parameters.AddWithValue("@Monto", PagosProveedorActualizada.Monto);
+                cmd.Parameters.AddWithValue("@FechaPago", PagosProveedorActualizada.FechaPago);
+                cmd.Parameters.AddWithValue("@MetodoPagoID", PagosProveedorActualizada.MetodoPagoID);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void EliminarPagosProveedor(int PagoID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_PagoProveedor @PagoID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@PagoID", PagoID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Pago de Proveedores: " + ex.Message);
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

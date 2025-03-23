@@ -135,6 +135,11 @@ namespace Gestion_Ventas_P.Controllers
             return View();
         }
 
+        public IActionResult PagosProveedor()
+        {
+            ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+            return View();
+        }
         public IActionResult VerProductos()
         {
             List<Producto> listaProducto = _accesoDatos.MostrarProducto();
@@ -181,8 +186,19 @@ namespace Gestion_Ventas_P.Controllers
             List<Compra> listaCompra = _accesoDatos.MostrarCompra();
             return View(listaCompra);
         }
+        public IActionResult VerPagosProveedor()
+        {
+            List<PagosProveedor> listaPagosProveedor =  _accesoDatos.MostrarPagosProveedor();
+            return View(listaPagosProveedor);
+        }
+        
+        public IActionResult VerDetalleCompra()
+        {
+            List<DetalleCompra> listaDetalleCompra = _accesoDatos.MostrarDetalleCompra();
+            return View(listaDetalleCompra);
+        }
 
-        List<Compra> listaCompra = new List<Compra>();
+        List<DetalleCompra> listaDetalleCompra = new List<DetalleCompra>();
         public IActionResult ActualizarTipoDePan(int id)
         {
             TipoDePan TipoPan = _accesoDatos.ObtenerTipoDePanPorID(id);
@@ -983,8 +999,135 @@ namespace Gestion_Ventas_P.Controllers
             }
         }
 
+        public IActionResult ActualizarDetalleCompra(int id)
+        {
+            DetalleCompra DetalleCompra = _accesoDatos.ObtenerDetalleCompraPorId(id);
+            if (DetalleCompra == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+            // Asegurarse de que las listas no sean nulas
+            var productos = _accesoDatos.MostrarProducto() ?? new List<Producto>();
 
+            // Verificar si las listas están vacías
+            if (!productos.Any())
+            {
+                TempData["ErrorMessage"] = "No hay productos disponibles.";
+                return RedirectToAction("VerDetalleCompra");
+            }
 
+            // Pasar los datos a la vista
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+
+            return View(DetalleCompra);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarDetalleCompra(DetalleCompra DetalleCompraActualizada)
+        {
+            try
+            {
+                _accesoDatos.ActualizarDetalleCompra(DetalleCompraActualizada);
+                TempData["SuccessMessage"] = "Detalle de Compra actualizada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerDetalleCompra");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarDetalleCompra(int DetalleCompraID)
+        {
+            try
+            {
+                _accesoDatos.EliminarDetalleCompra(DetalleCompraID);
+                TempData["Mensaje"] = "Detalle de Compra eliminada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerDetalleCompra");
+        }
+
+        [HttpPost]
+        public IActionResult AgregarPagosProveedor(PagosProveedor PagosProveedorNuevo)
+        {
+            try
+            {
+                ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+                _accesoDatos.AgregarPagosProveedor(PagosProveedorNuevo);
+                TempData["SuccessMessage"] = "Pago a Proveedor registrado correctamente.";
+                return RedirectToAction("PagosProveedor"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+                TempData["ErrorMessage"] = "Error al registrar Pago a Proveedor: " + ex.Message;
+                return View("PagosProveedor");
+            }
+        }
+
+        public IActionResult ActualizarPagosProveedor(int id)
+        {
+            PagosProveedor PagosProveedor = _accesoDatos.ObtenerPagosProveedorPorId(id);
+            if (PagosProveedor == null)
+            {
+                return NotFound();
+            }
+            ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+            // Asegurarse de que las listas no sean nulas
+            var MetodosPago = _accesoDatos.MostrarMetodoPago() ?? new List<MetodoPago>();
+
+            // Verificar si las listas están vacías
+            if (!MetodosPago.Any())
+            {
+                TempData["ErrorMessage"] = "No hay Proveedores disponibles.";
+                return RedirectToAction("VerPagosProveedor");
+            }
+
+            // Pasar los datos a la vista
+            ViewBag.MetodosPago = new SelectList(_accesoDatos.MostrarMetodoPago(), "MetodoPagoID", "Nombre");
+
+            return View(PagosProveedor);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarPagosProveedor(PagosProveedor PagosProveedorActualizada)
+        {
+            try
+            {
+                _accesoDatos.ActualizarPagosProveedor(PagosProveedorActualizada);
+                TempData["SuccessMessage"] = "Pago Proveedor actualizada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerPagosProveedor");
+        }
+
+        [HttpPost]
+        public IActionResult EliminarPagosProveedor(int PagoID)
+        {
+            try
+            {
+                _accesoDatos.EliminarPagosProveedor(PagoID);
+                TempData["Mensaje"] = "Pago de Proveedores eliminado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerPagosProveedor");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

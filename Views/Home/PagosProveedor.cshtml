@@ -1,0 +1,61 @@
+﻿@model Gestion_Ventas_P.Models.PagosProveedor
+
+@{
+    ViewData["Title"] = "Agregar Pago a Proveedores";
+}
+
+<h2>Agregar Pago a Proveedores</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<form asp-action="AgregarPagosProveedor" method="post">
+    <div class="form-group">
+        <label asp-for="CompraID" class="control-label">CompraID</label>
+        <input asp-for="CompraID" class="form-control" type="number" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Monto" class="control-label">Monto</label>
+        <input asp-for="Monto" class="form-control" />
+        <span asp-validation-for="Monto" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FechaPago" class="control-label">Fecha de Pago</label>
+        <input asp-for="FechaPago" type="datetime-local" class="form-control" />
+        <span asp-validation-for="FechaPago" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MetodoPagoID" class="control-label">Método de Pago</label>
+        <select asp-for="MetodoPagoID" asp-items="ViewBag.MetodosPago" class="form-control">
+            <option value="">Seleccione un Método de Pago</option>
+        </select>
+        <span asp-validation-for="MetodoPagoID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FechaAdicion" class="control-label">Fecha de Adicion</label>
+        <input asp-for="FechaAdicion" type="datetime-local" class="form-control" />
+        <span asp-validation-for="FechaAdicion" class="text-danger"></span>
+    </div> 
+
+    <div class="form-group">
+        <label asp-for="AdicionadoPor" class="control-label">Adicionado Por</label>
+        <input asp-for="AdicionadoPor" class="form-control" />
+        <span asp-validation-for="AdicionadoPor" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar Pago</button>
+
+</form>
+<a asp-action="index" class="btn btn-secondary">Cancelar</a>
+<a asp-action="VerPagosProveedor" class="btn btn-secondary">Ver lista de pagos a Proveedores</a>
