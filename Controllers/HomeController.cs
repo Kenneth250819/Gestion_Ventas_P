@@ -124,6 +124,12 @@ namespace Gestion_Ventas_P.Controllers
             return View();
         }
 
+        public IActionResult Compra()
+        {
+            ViewBag.Proveedor = new SelectList(_accesoDatos.MostrarProveedor(), "ProveedorID", "Nombre");
+            return View();
+        }
+
         public IActionResult VerProductos()
         {
             List<Producto> listaProducto = _accesoDatos.MostrarProducto();
@@ -164,7 +170,14 @@ namespace Gestion_Ventas_P.Controllers
             List<Proveedor> listaProveedor = _accesoDatos.MostrarProveedor();
             return View(listaProveedor);
         }
-        
+
+        public IActionResult VerCompra()
+        {
+            List<Compra> listaCompra = _accesoDatos.MostrarCompra();
+            return View(listaCompra);
+        }
+
+        List<Compra> listaCompra = new List<Compra>();
         public IActionResult ActualizarTipoDePan(int id)
         {
             TipoDePan TipoPan = _accesoDatos.ObtenerTipoDePanPorID(id);
@@ -872,8 +885,63 @@ namespace Gestion_Ventas_P.Controllers
             return RedirectToAction("VerProveedor");
         }
 
+        [HttpPost]
+        public IActionResult AgregarCompra(Compra CompraNueva)
+        {
+            try
+            {
+                ViewBag.Proveedor = new SelectList(_accesoDatos.MostrarProveedor(), "ProveedorID", "Nombre");
+                _accesoDatos.AgregarCompra(CompraNueva);
+                TempData["SuccessMessage"] = "Compra registrada correctamente.";
+                return RedirectToAction("Compra"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Proveedor = new SelectList(_accesoDatos.MostrarProveedor(), "ProveedorID", "Nombre");
+                TempData["ErrorMessage"] = "Error al registrar Compra: " + ex.Message;
+                return View("Compra");
+            }
+        }
 
+        public IActionResult ActualizarCompra(int id)
+        {
+            Compra Compra = _accesoDatos.ObtenerCompraPorId(id);
+            if (Compra == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Proveedor = new SelectList(_accesoDatos.MostrarProveedor(), "ProveedorID", "Nombre");
+            // Asegurarse de que las listas no sean nulas
+            var proveedores = _accesoDatos.MostrarProveedor() ?? new List<Proveedor>();
 
+            // Verificar si las listas están vacías
+            if (!proveedores.Any())
+            {
+                TempData["ErrorMessage"] = "No hay Proveedores disponibles.";
+                return RedirectToAction("VerCompra");
+            }
+
+            // Pasar los datos a la vista
+            ViewBag.Proveedor = new SelectList(_accesoDatos.MostrarProveedor(), "ProveedorID", "Nombre");
+
+            return View(Compra);
+        }
+
+        [HttpPost]
+        public IActionResult ActualizarCompra(Compra CompraActualizada)
+        {
+            try
+            {
+                _accesoDatos.ActualizarCompra(CompraActualizada);
+                TempData["SuccessMessage"] = "Compra actualizada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error al actualizar: " + ex.Message;
+            }
+
+            return RedirectToAction("VerCompra");
+        }
 
 
 

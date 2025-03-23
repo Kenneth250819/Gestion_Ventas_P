@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -1564,6 +1565,139 @@ namespace Gestion_Ventas_P.Models
                 }
             }
         }
+
+        public void AgregarCompra(Compra CompraNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_Compra  @ProveedorID, @FechaCompra, @Total, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ProveedorID", CompraNuevo.ProveedorID);
+                        cmd.Parameters.AddWithValue("@FechaCompra", CompraNuevo.FechaCompra);
+                        cmd.Parameters.AddWithValue("@Total", CompraNuevo.Total);
+                        cmd.Parameters.AddWithValue("@adicionado_por", CompraNuevo.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar  el Compra: " + ex.Message);
+                }
+            }
+        }
+
+        public List<Compra> MostrarCompra()
+        {
+            List<Compra> listaCompra = new List<Compra>();
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Mostrar_Compras"; // Asegúrate de que este sea el nombre correcto del procedimiento almacenado
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Compra com = new Compra
+                                {
+                                    CompraID = Convert.ToInt32(reader["CompraID"]),
+                                    ProveedorID = Convert.ToInt32(reader["ProveedorID"]),
+                                    NombreProveedor = reader["ProveedorNombre"].ToString(),
+                                    FechaCompra = Convert.ToDateTime(reader["FechaCompra"]), // Nombre del producto desde la tabla Productos
+                                    Total = Convert.ToInt32(reader["Total"]),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                                listaCompra.Add(com);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener la lista de inventario: " + ex.Message);
+                }
+            }
+
+            return listaCompra;
+        }
+
+        public Compra ObtenerCompraPorId(int CompraID)
+        {
+            Compra Compra = null;
+
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "sp_Mostrar_Compra_Por_Id"; // Procedimiento almacenado
+
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@CompraID", CompraID);
+
+                        con.Open();
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Compra = new Compra
+                                {
+                                    CompraID = Convert.ToInt32(reader["CompraID"]),
+                                    ProveedorID = Convert.ToInt32(reader["ProveedorID"]),
+                                    NombreProveedor = reader["ProveedorNombre"].ToString(),
+                                    FechaCompra = Convert.ToDateTime(reader["FechaCompra"]),
+                                    Total = Convert.ToInt32(reader["Total"]),
+                                    AdicionadoPor = reader["adicionado_por"].ToString(),
+                                    FechaAdicion = Convert.ToDateTime(reader["fecha_adicion"]),
+                                    FechaModificacion = reader["fecha_modificacion"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_modificacion"]) : (DateTime?)null,
+                                    ModificadoPor = reader["modificado_por"].ToString()
+                                };
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener el Inventario: " + ex.Message);
+                }
+            }
+
+            return Compra;
+        }
+
+        public void ActualizarCompra(Compra CompraActualizada)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_Actualizar_Compra", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@CompraID", CompraActualizada.CompraID);
+                cmd.Parameters.AddWithValue("@ProveedorID", CompraActualizada.ProveedorID);
+                cmd.Parameters.AddWithValue("@FechaCompra", CompraActualizada.FechaCompra);
+                cmd.Parameters.AddWithValue("@Total", CompraActualizada.Total);
+                cmd.Parameters.AddWithValue("@fecha_modificacion", CompraActualizada.FechaModificacion);
+                cmd.Parameters.AddWithValue("@modificado_por", "Admin");
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
 
     }
 }

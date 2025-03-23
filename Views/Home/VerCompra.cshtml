@@ -1,0 +1,55 @@
+﻿@model List<Gestion_Ventas_P.Models.Compra>
+
+    @{
+        ViewData["Title"] = "Lista de Compras";
+    }
+
+    <h2>Lista de Compras</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID Compra</th>
+                <th>Proveedor</th>
+                <th>Fecha de Compra</th>
+                <th>Total</th>
+                <th>Adicionado por</th>
+                <th>Fecha Adición</th>
+                <th>Modificado por</th>
+                <th>Fecha Modificación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Compra in Model)
+            {
+                <tr>
+                    <td>@Compra.CompraID</td>
+                    <td>@Compra.NombreProveedor</td>
+                    <td>@Compra.FechaCompra.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@Compra.Total.ToString("C")</td>
+                    <td>@Compra.AdicionadoPor</td>
+                    <td>@Compra.FechaAdicion.ToString("yyyy-MM-dd")</td>
+                    <td>@Compra.FechaModificacion?.ToString("yyyy-MM-dd")</td>
+                    <td>@Compra.ModificadoPor</td>
+                    <td>
+                        <a href="@Url.Action("ActualizarCompra", "Home", new { id = Compra.CompraID })" class="btn btn-warning btn-sm">Actualizar</a>
+                        <form asp-action="EliminarCompra" method="post" style="display:inline;">
+                            <input type="hidden" name="CompraID" value="@Compra.CompraID" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar la Compra?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
