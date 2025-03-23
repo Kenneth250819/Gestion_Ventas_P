@@ -129,6 +129,11 @@ namespace Gestion_Ventas_P.Controllers
             ViewBag.Proveedor = new SelectList(_accesoDatos.MostrarProveedor(), "ProveedorID", "Nombre");
             return View();
         }
+        public IActionResult DetalleCompra()
+        {
+            ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+            return View();
+        }
 
         public IActionResult VerProductos()
         {
@@ -943,6 +948,40 @@ namespace Gestion_Ventas_P.Controllers
             return RedirectToAction("VerCompra");
         }
 
+        [HttpPost]
+        public IActionResult EliminarCompra(int CompraID)
+        {
+            try
+            {
+                _accesoDatos.EliminarCompra(CompraID);
+                TempData["Mensaje"] = "Compra eliminada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction("VerCompra");
+        }
+
+
+        [HttpPost]
+        public IActionResult AgregarDetalleCompra(DetalleCompra DetalleCompraNueva)
+        {
+            try
+            {
+                ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+                _accesoDatos.AgregarDetalleCompra(DetalleCompraNueva);
+                TempData["SuccessMessage"] = "Detalla de Compra registrado correctamente.";
+                return RedirectToAction("DetalleCompra"); // Redirigir a la lista de ventas
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Productos = new SelectList(_accesoDatos.MostrarProducto(), "ProductoID", "Nombre");
+                TempData["ErrorMessage"] = "Error al registrar Detalle de Compra: " + ex.Message;
+                return View("DetalleCompra");
+            }
+        }
 
 
 

@@ -1696,6 +1696,52 @@ namespace Gestion_Ventas_P.Models
                 cmd.ExecuteNonQuery();
             }
         }
+        public void EliminarCompra(int CompraID)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "EXEC sp_Eliminar_Compra @CompraID";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@CompraID", CompraID);
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar Compra: " + ex.Message);
+                }
+            }
+        }
+        public void AgregarDetalleCompra(DetalleCompra DetalleCompraNuevo)
+        {
+            using (SqlConnection con = new SqlConnection(_conexion))
+            {
+                try
+                {
+                    string query = "Exec sp_Insertar_DetalleCompra  @CompraID, @ProductoID, @Cantidad, @PrecioUnitario, @adicionado_por";
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@CompraID", DetalleCompraNuevo.CompraID);
+                        cmd.Parameters.AddWithValue("@ProductoID", DetalleCompraNuevo.ProductoID);
+                        cmd.Parameters.AddWithValue("@Cantidad", DetalleCompraNuevo.Cantidad);
+                        cmd.Parameters.AddWithValue("@PrecioUnitario", DetalleCompraNuevo.PrecioUnitario);
+                        cmd.Parameters.AddWithValue("@adicionado_por", DetalleCompraNuevo.AdicionadoPor);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al registrar el Detalle de Compra: " + ex.Message);
+                }
+            }
+        }
+
 
 
 

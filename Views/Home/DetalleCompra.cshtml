@@ -1,0 +1,51 @@
+﻿@model Gestion_Ventas_P.Models.DetalleCompra
+
+@{
+    ViewData["Title"] = "Agregar Detalle de Compra";
+}
+
+<h2>Agregar Nuevo Detalle de Compra</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form asp-action="AgregarDetalleCompra" method="post">
+    <div class="form-group">
+        <label asp-for="CompraID" class="control-label">CompraID</label>
+        <input asp-for="CompraID" class="form-control" type="number" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductoID" class="control-label">Producto</label>
+        <select asp-for="ProductoID" asp-items="ViewBag.Productos" class="form-control" required>
+            <option value="">Seleccione un Producto</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Cantidad" class="control-label">Cantidad</label>
+        <input asp-for="Cantidad" class="form-control" type="number" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PrecioUnitario" class="control-label">Precio Unitario</label>
+        <input asp-for="PrecioUnitario" class="form-control" type="number" step="0.01" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AdicionadoPor" class="control-label">Adicionado por</label>
+        <input asp-for="AdicionadoPor" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Agregar Detalle</button>
+    <a asp-action="VerCompra" class="btn btn-secondary">Volver a la Compra</a>
+</form>
+
+<a asp-action="VerCompra" class="btn btn-secondary">Ver Lista de Compras</a>
