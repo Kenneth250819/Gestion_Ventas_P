@@ -6,128 +6,138 @@
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
 }
 
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    <div class="alert alert-danger text-center">@TempData["ErrorMessage"]</div>
 }
 
-<h2>Crear Nuevo Cliente</h2>
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4 text-primary">Crear Nuevo Cliente</h2>
 
-<form asp-action="CrearCliente" method="post">
-    <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input type="text" class="form-control" id="nombre" name="nombre" required />
+        <form asp-action="CrearCliente" method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control rounded-pill" id="nombre" name="nombre" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="apellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control rounded-pill" id="apellido" name="apellido" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="apellido2" class="form-label">Segundo Apellido</label>
+                    <input type="text" class="form-control rounded-pill" id="apellido2" name="apellido2" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="text" class="form-control rounded-pill" id="telefono" name="telefono" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control rounded-pill" id="email" name="email" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control rounded-pill" id="fechaNacimiento" name="fechaNacimiento" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" class="form-control rounded-pill" id="direccion" name="direccion" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="provincia" class="form-label">Provincia</label>
+                    <input type="text" class="form-control rounded-pill" id="provincia" name="provincia" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="canton" class="form-label">Cantón</label>
+                    <input type="text" class="form-control rounded-pill" id="canton" name="canton" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                    <input type="text" class="form-control rounded-pill" id="nacionalidad" name="nacionalidad" />
+                </div>
+
+                <div class="col-md-6">
+                    <label for="adicionadoPor" class="form-label">Adicionado Por</label>
+                    <input type="text" class="form-control rounded-pill" id="adicionadoPor" name="adicionadoPor" required />
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success btn-lg rounded-pill px-4">Guardar Cliente</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div class="form-group">
-        <label for="apellido">Apellido</label>
-        <input type="text" class="form-control" id="apellido" name="apellido" required />
-    </div>
+<hr class="my-5">
 
-    <div class="form-group">
-        <label for="apellido2">Segundo Apellido</label>
-        <input type="text" class="form-control" id="apellido2" name="apellido2" />
-    </div>
+<div class="container mt-4">
+    <h2 class="text-center text-primary">Lista de Clientes</h2>
 
-    <div class="form-group">
-        <label for="direccion">Dirección</label>
-        <input type="text" class="form-control" id="direccion" name="direccion" />
-    </div>
-
-    <div class="form-group">
-        <label for="provincia">Provincia</label>
-        <input type="text" class="form-control" id="provincia" name="provincia" />
-    </div>
-
-    <div class="form-group">
-        <label for="canton">Cantón</label>
-        <input type="text" class="form-control" id="canton" name="canton" />
-    </div>
-
-    <div class="form-group">
-        <label for="telefono">Teléfono</label>
-        <input type="text" class="form-control" id="telefono" name="telefono" />
-    </div>
-
-    <div class="form-group">
-        <label for="email">Correo Electrónico</label>
-        <input type="email" class="form-control" id="email" name="email" />
-    </div>
-
-    <div class="form-group">
-        <label for="fechaNacimiento">Fecha de Nacimiento</label>
-        <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" />
-    </div>
-
-    <div class="form-group">
-        <label for="nacionalidad">Nacionalidad</label>
-        <input type="text" class="form-control" id="nacionalidad" name="nacionalidad" />
-    </div>
-
-    <div class="form-group">
-        <label for="adicionadoPor">Adicionado Por</label>
-        <input type="text" class="form-control" id="adicionadoPor" name="adicionadoPor" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar Cliente</button>
-</form>
-
-<h2>Lista de Clientes</h2>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>ID Cliente</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Apellido2</th>
-            <th>Direccion</th>
-            <th>Provincia</th>
-            <th>Canton</th>
-            <th>Telefono</th>
-            <th>Email</th>
-            <th>FechaNacimiento</th>
-            <th>Nacionalidad</th>
-            <th>AdicionadoPor</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model == null || Model.Count == 0)
-        {
-            <tr>
-                <td colspan="13" class="text-center">No hay clientes registrados.</td>
-            </tr>
-        }
-        else
-        {
-            @foreach (var cliente in Model)
-            {
+    <div class="table-responsive">
+        <table class="table table-striped table-hover text-center shadow">
+            <thead class="table-dark">
                 <tr>
-                    <td>@cliente.ClienteID</td>
-                    <td>@cliente.Nombre</td>
-                    <td>@cliente.Apellido</td>
-                    <td>@cliente.Apellido2</td>
-                    <td>@cliente.Direccion</td>
-                    <td>@cliente.Provincia</td>
-                    <td>@cliente.Canton</td>
-                    <td>@cliente.Telefono</td>
-                    <td>@cliente.Email</td>
-                    <td>@cliente.FechaNacimiento?.ToString("yyyy-MM-dd")</td>
-                    <td>@cliente.Nacionalidad</td>
-                    <td>@cliente.AdicionadoPor</td>
-                    <td>
-                        <a href="@Url.Action("ActualizarCliente", "Home", new { id = cliente.ClienteID })" class="btn btn-warning btn-sm">Actualizar</a>
-                        <form asp-action="EliminarCliente" method="post" style="display:inline;">
-                            <input type="hidden" name="ClienteID" value="@cliente.ClienteID" />
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</button>
-                        </form>
-                    </td>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Apellido2</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Nacionalidad</th>
+                    <th>Adicionado Por</th>
+                    <th>Acciones</th>
                 </tr>
-            }
-        }
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+                @if (Model == null || Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="10" class="text-center text-muted">No hay clientes registrados.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <td>@cliente.ClienteID</td>
+                            <td>@cliente.Nombre</td>
+                            <td>@cliente.Apellido</td>
+                            <td>@cliente.Apellido2</td>
+                            <td>@cliente.Telefono</td>
+                            <td>@cliente.Email</td>
+                            <td>@cliente.FechaNacimiento?.ToString("yyyy-MM-dd")</td>
+                            <td>@cliente.Nacionalidad</td>
+                            <td>@cliente.AdicionadoPor</td>
+                            <td>
+                                <a href="@Url.Action("ActualizarCliente", "Home", new { id = cliente.ClienteID })" class="btn btn-warning btn-sm rounded-pill">✏️ Editar</a>
+                                <form asp-action="EliminarCliente" method="post" style="display:inline;">
+                                    <input type="hidden" name="ClienteID" value="@cliente.ClienteID" />
+                                    <button type="submit" class="btn btn-danger btn-sm rounded-pill" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">🗑️ Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+

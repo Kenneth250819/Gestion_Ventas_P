@@ -5,7 +5,7 @@
 }
 
 <h2>Editar Categoria</h2>
-
+<div class="actualizar-categoria-container">
 <form asp-action="ActualizarCategoria" method="post">
     <input type="hidden" asp-for="CategoriaID" />
 
@@ -24,3 +24,7 @@
     <button type="submit" class="btn btn-success">Guardar Cambios</button>
     <a asp-action="Categoria" class="btn btn-secondary">Cancelar</a>
 </form>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/actualizarcategoria.css" />
+}

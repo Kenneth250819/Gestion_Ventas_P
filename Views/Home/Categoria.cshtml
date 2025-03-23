@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Agregar Categoría";
 }
+<div class="Categoria-container">
 
 <h2>Agregar Nueva Categoría</h2>
 
@@ -35,9 +36,9 @@
 </form>
 
 <a asp-action="Index" class="btn btn-secondary mt-3">Volver</a>
-
+    </div>
 <hr>
-
+<div class="Categoria-lista-container">
 <h2>Lista de Categorias</h2>
 
 <table class="table table-bordered">
@@ -81,3 +82,7 @@
         }
     </tbody>
 </table>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/categoria.css" />
+}

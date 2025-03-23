@@ -1,0 +1,32 @@
+﻿.card {
+    border-radius: 12px;
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    transition: all 0.3s;
+}
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    }
+
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
+.table {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+

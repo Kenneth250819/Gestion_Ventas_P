@@ -6,146 +6,52 @@
 
 <div class="container">
     <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-user fa-2x text-primary"></i>
-                    <h5 class="card-title mt-2">Clientes</h5>
-                    <a href="@Url.Action("CrearCliente", "Home")" class="btn btn-primary w-100">Ir</a>
+        @{
+            var menuItems = new[] {
+        new { Title = "Clientes", Icon = "fa-user", Color = "text-primary", Action = "CrearCliente" },
+        new { Title = "Tipos de Pan", Icon = "fa-bread-slice", Color = "text-warning", Action = "TipoDePan" },
+        new { Title = "Categorías", Icon = "fa-list-alt", Color = "text-primary", Action = "Categoria" },
+        new { Title = "Productos", Icon = "fa-box", Color = "text-warning", Action = "Producto" },
+        new { Title = "Ventas", Icon = "fa-shopping-cart", Color = "text-primary", Action = "Venta" },
+        new { Title = "Métodos de Pago", Icon = "fa-credit-card", Color = "text-warning", Action = "MetodoPago" },
+        new { Title = "Pago de Clientes", Icon = "fa-money-bill-wave", Color = "text-primary", Action = "PagoCliente" },
+        new { Title = "Detalle de Venta", Icon = "fa-receipt", Color = "text-warning", Action = "DetalleVenta" },
+        new { Title = "Inventarios", Icon = "fa-warehouse", Color = "text-primary", Action = "Inventario" },
+        new { Title = "Proveedores", Icon = "fa-truck", Color = "text-warning", Action = "Proveedor" },
+        new { Title = "Compras", Icon = "fa-shopping-bag", Color = "text-primary", Action = "Compra" },
+        new { Title = "Detalle de Compras", Icon = "fa-file-invoice", Color = "text-warning", Action = "DetalleCompra" },
+        new { Title = "Pago Proveedores", Icon = "fa-hand-holding-usd", Color = "text-primary", Action = "PagosProveedor" }
+        };
+        }
+
+        @foreach (var item in menuItems)
+        {
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center menu-card">
+                    <div class="card-body">
+                        <i class="fas @item.Icon fa-2x @item.Color"></i>
+                        <h5 class="card-title mt-2">@item.Title</h5>
+                        <a href="@Url.Action(item.Action, "Home")" class="btn @(@item.Color == "text-primary" ? "btn-primary" : "btn-warning") w-100">Ir</a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-bread-slice fa-2x text-warning"></i>
-                    <h5 class="card-title mt-2">Tipos de Pan</h5>
-                    <a href="@Url.Action("TipoDePan", "Home")" class="btn btn-warning w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-list-alt fa-2x text-primary"></i>
-                    <h5 class="card-title mt-2">Categorías</h5>
-                    <a href="@Url.Action("Categoria", "Home")" class="btn btn-primary w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-box fa-2x text-warning"></i>
-                    <h5 class="card-title mt-2">Productos</h5>
-                    <a href="@Url.Action("Producto", "Home")" class="btn btn-warning w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-shopping-cart fa-2x text-primary"></i>
-                    <h5 class="card-title mt-2">Ventas</h5>
-                    <a href="@Url.Action("Venta", "Home")" class="btn btn-primary w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-credit-card fa-2x text-warning"></i>
-                    <h5 class="card-title mt-2">Métodos de Pago</h5>
-                    <a href="@Url.Action("MetodoPago", "Home")" class="btn btn-warning w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-money-bill-wave fa-2x text-primary"></i>
-                    <h5 class="card-title mt-2">Pago de Clientes</h5>
-                    <a href="@Url.Action("PagoCliente", "Home")" class="btn btn-primary w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-receipt fa-2x text-warning"></i>
-                    <h5 class="card-title mt-2">Detalle de Venta</h5>
-                    <a href="@Url.Action("DetalleVenta", "Home")" class="btn btn-warning w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-warehouse fa-2x text-primary"></i>
-                    <h5 class="card-title mt-2">Inventarios</h5>
-                    <a href="@Url.Action("Inventario", "Home")" class="btn btn-primary w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-truck fa-2x text-warning"></i>
-                    <h5 class="card-title mt-2">Proveedores</h5>
-                    <a href="@Url.Action("Proveedor", "Home")" class="btn btn-warning w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-shopping-cart fa-2x text-primary"></i>
-                    <h5 class="card-title mt-2">Compras</h5>
-                    <a href="@Url.Action("Compra", "Home")" class="btn btn-primary w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-credit-card fa-2x text-warning"></i>
-                    <h5 class="card-title mt-2">Detalle de Compras</h5>
-                    <a href="@Url.Action("DetalleCompra", "Home")" class="btn btn-warning w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center">
-                <div class="card-body">
-                    <i class="fas fa-credit-card fa-2x text-primary"></i>
-                    <h5 class="card-title mt-2">Pago Proveedores</h5>
-                    <a href="@Url.Action("PagosProveedor", "Home")" class="btn btn-primary w-100">Ir</a>
-                </div>
-            </div>
-        </div>
-
+        }
     </div>
 </div>
 
 <style>
-    .card {
-        transition: transform 0.3s ease-in-out;
+    .menu-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        border-radius: 12px;
     }
 
-        .card:hover {
+        .menu-card:hover {
             transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-card .btn {
+            font-weight: bold;
+            border-radius: 8px;
         }
 </style>
-

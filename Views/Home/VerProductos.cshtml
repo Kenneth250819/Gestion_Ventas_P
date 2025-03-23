@@ -3,9 +3,6 @@
 @{
     ViewData["Title"] = "Lista de Producto";
 }
-
-<h2>Agregar Producto</h2>
-
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
@@ -15,6 +12,8 @@
 {
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }
+<div class="ver-prodcuto-container">
+<h2> Lista de Productos</h2>
 
 <hr />
 <h2>Lista de Productos</h2>
@@ -66,3 +65,9 @@
 </table>
 
 <a asp-action="Producto" class="btn btn-secondary mt-3">Volver Atras</a>
+    
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/verProducto.css" />
+}

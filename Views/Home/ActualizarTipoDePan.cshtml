@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Editar Tipo de Pan";
 }
-
+<div class="tipo-de-pan-actualizar-container">
 <h2>Editar Tipo de Pan</h2>
 
 <form asp-action="ActualizarTipoDePan" method="post">
@@ -24,4 +24,8 @@
     <button type="submit" class="btn btn-success">Guardar Cambios</button>
     <a asp-action="TipoDePan" class="btn btn-secondary">Cancelar</a>
 </form>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/tipodepanActualizar.css" />
+}
 

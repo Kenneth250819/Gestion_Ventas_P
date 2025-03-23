@@ -15,7 +15,7 @@
 {
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }
-
+<div class="producto-container">
 <form asp-action="AgregarProducto" method="post">
     <div class="form-group">
         <label for="Nombre">Nombre</label>
@@ -57,3 +57,7 @@
 </form>
 
 <a asp-action="VerProductos" class="btn btn-secondary mt-3">Lista de Productos</a>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/producto.css" />
+}

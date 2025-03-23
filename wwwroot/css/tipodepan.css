@@ -1,0 +1,155 @@
+﻿/* Estilos generales */
+body {
+    background-color: #121212;
+    font-family: 'Arial', sans-serif;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor principal */
+.tipo-de-pan-container, .tipo-de-pan-lista-container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Títulos */
+h2 {
+    text-align: center;
+    color: #f39c12;
+    text-transform: uppercase;
+}
+
+/* Mensajes de éxito y error */
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Formulario */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #ccc;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #222;
+    color: #fff;
+    transition: border 0.3s ease-in-out;
+}
+
+    .form-control:focus {
+        border-color: #f39c12;
+        outline: none;
+        box-shadow: 0 0 8px rgba(243, 156, 18, 0.3);
+    }
+
+/* Botón de agregar */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #f39c12;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+    .btn-primary:hover {
+        background: #d68910;
+        transform: scale(1.05);
+    }
+
+/* Tabla */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #222;
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .table thead {
+        background-color: #f39c12;
+        color: white;
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #444;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #2c2c2c;
+    }
+
+/* Botones de acción */
+.btn-warning {
+    background: #e67e22;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+    .btn-warning:hover {
+        background: #d35400;
+    }
+
+.btn-danger {
+    background: #c0392b;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: none;
+    transition: background 0.3s ease-in-out;
+}
+
+    .btn-danger:hover {
+        background: #a93226;
+    }
+
+/* Responsivo: Si la pantalla es pequeña, reducir el ancho */
+@media (max-width: 768px) {
+    .tipo-de-pan-container, .tipo-de-pan-lista-container {
+        width: 90%;
+        padding: 20px;
+    }
+}

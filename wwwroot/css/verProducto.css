@@ -1,0 +1,150 @@
+﻿/* Contenedor principal de la lista de productos */
+.ver-prodcuto-container {
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 1200px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+/* Títulos */
+h2 {
+    text-align: center;
+    color: #343a40;
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Línea horizontal */
+hr {
+    border: 1px solid #e0e0e0;
+    margin: 20px 0;
+}
+
+/* Estilo para las alertas */
+.alert {
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.alert-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+/* Estilo de la tabla */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 30px;
+    font-size: 1rem;
+}
+
+    .table th, .table td {
+        text-align: left;
+        padding: 12px 20px;
+        vertical-align: middle;
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: #ffffff;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .table td {
+        background-color: #f9f9f9;
+        border-bottom: 1px solid #ddd;
+        font-size: 0.95rem;
+    }
+
+    .table tr:nth-child(even) td {
+        background-color: #f1f1f1;
+    }
+
+    .table td a {
+        color: #fff;
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+        /* Botón "Actualizar" */
+        .table td a.btn-warning {
+            background-color: #ffc107;
+            transition: background-color 0.3s ease;
+        }
+
+            .table td a.btn-warning:hover {
+                background-color: #e0a800;
+            }
+
+    /* Botón "Eliminar" */
+    .table td button[type="submit"].btn-danger {
+        background-color: #dc3545;
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-size: 0.875rem;
+        transition: background-color 0.3s ease;
+    }
+
+        .table td button[type="submit"].btn-danger:hover {
+            background-color: #c82333;
+        }
+
+/* Botón Volver Atras */
+.btn-secondary {
+    display: inline-block;
+    text-align: center;
+    margin-top: 30px;
+    padding: 12px 25px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .ver-prodcuto-container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    .table th, .table td {
+        padding: 10px 15px;
+        font-size: 0.875rem;
+    }
+
+    .btn-secondary {
+        width: 100%;
+        padding: 12px 20px;
+    }
+}

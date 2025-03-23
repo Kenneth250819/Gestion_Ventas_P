@@ -1,0 +1,142 @@
+﻿/* Contenedor principal */
+.producto-container {
+    margin: 30px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+h2 {
+    text-align: center;
+    color: #343a40;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Alertas */
+.alert {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Formulario */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #495057;
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    }
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Dropdown */
+.select2-container {
+    width: 100% !important;
+}
+
+/* Botones */
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+/* Botón de lista de productos */
+.btn-secondary {
+    display: inline-block;
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        transform: scale(1.05);
+    }
+
+/* Estilo para los mensajes de validación */
+.text-danger {
+    font-size: 0.875rem;
+    color: #dc3545;
+}
+
+/* Estilo de la tabla */
+.table {
+    border-radius: 12px;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 20px;
+}
+
+    .table th, .table td {
+        vertical-align: middle;
+        padding: 12px;
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table td {
+        background-color: #f9f9f9;
+    }
+
+    .table tr:nth-child(even) td {
+        background-color: #f1f1f1;
+    }
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .producto-container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    button[type="submit"] {
+        padding: 10px;
+    }
+
+    .btn-secondary {
+        width: 100%;
+    }
+}
