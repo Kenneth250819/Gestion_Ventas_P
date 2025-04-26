@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Gestion_Ventas_P.Models
         public AccesoDatos(IConfiguration configuracion)
         {
 
-            _conexion = configuracion.GetConnectionString("Conexion");
+            _conexion = configuracion["ConnectionStrings:Conexion"];
             if (string.IsNullOrEmpty(_conexion))
             {
                 throw new Exception("Error: La cadena de conexión no se cargó correctamente.");
